@@ -41,8 +41,10 @@ def step_maker(query: str, planList: PlanList):
              Generate SQL query from the plan given by the user.
              You have to make sure that the SQL syntext is correct and
              step by step reaches the original goal. eventually the last
-             query should return the proper data that the user 
-             is looking for. So you will return the SQL queries 
+             query should return the proper data that the user
+             is looking for. In the last query try to avoid taking all data
+             using * rather try to take data which are required
+             to satisfy the query. So you will return the SQL query
              in the given response_format."""},
             {"role": "user", "content": prompt}
         ],

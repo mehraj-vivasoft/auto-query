@@ -30,10 +30,10 @@ async def query_fixer(
     => My goal is to do the following query: {query}
     => And Here are the required schemas of the tables: {schemas}
     => I did the following query:
-     {queryList.steps[queryList.len - 1].sql_query}
+     {queryList.steps[-1].sql_query}
     => But, I got this error while running the final query: {error_message}
-    => please fix the final query and return a query which is correct 
-    and also reaches the goal.
+    => please fix the final query and return a query which is correct
+     and also reaches the goal.
     """
 
     get_llm_logger().info("FIXING QUERY")
@@ -42,16 +42,16 @@ async def query_fixer(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": """You are a sql query fixer.
-             You will be given a list of query with a query plan and a
+             You will be given a query with a query plan and a
              error message while running the last and final combined query.
-             Fix the final query to reach the goal and return in the query
+             Fix the sql query to reach the goal and return in the query
              according to the response format ."""},
             {"role": "user", "content": prompt}
         ],
         response_format=FixQuery,
     )
 
-    fixed_query = completion.choices[0].message.parsed['query']
+    fixed_query = completion.choices[0].message.parsed.query
 
     get_llm_logger().info(f"FIXED QUERY FROM AI : {fixed_query}")
 
