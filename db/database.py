@@ -26,6 +26,7 @@ async def disconnect_db():
 
 # Function to execute a query
 async def execute_query(query: str):
+    """Function to execute"""
     logger.info(f"Executing query: {query}")
     return await database.fetch_all(query=query)
 
