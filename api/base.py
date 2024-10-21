@@ -12,6 +12,6 @@ class SearchRequest(BaseModel):
 
 
 @router.post("/query")
-async def search(request: SearchRequest):    
+async def search(request: SearchRequest):
 
     return {"query": request.query}

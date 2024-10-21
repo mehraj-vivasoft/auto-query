@@ -1,0 +1,9 @@
+services:
+  sqlserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "1433:1433"
