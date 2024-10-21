@@ -1,0 +1,5 @@
+fastapi
+python-dotenv
+openai
+sqlalchemy
+databases

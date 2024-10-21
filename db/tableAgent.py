@@ -1,4 +1,3 @@
-import json
 from typing import Callable, List, Optional
 
 from utils.getGptClient import get_gpt_client

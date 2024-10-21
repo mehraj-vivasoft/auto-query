@@ -14,15 +14,18 @@ logger = get_db_logger()
 # Async Database connection
 database = Database(DATABASE_URL)
 
+
 # Connection on startup
-async def connect_db():    
-    await database.connect()    
+async def connect_db():
+    await database.connect()
     logger.info("Database connected")
+
 
 # Disconnection on shutdown
 async def disconnect_db():
     await database.disconnect()
     logger.info("Database disconnected")
+
 
 # Function to execute a query
 async def execute_query(query: str):
@@ -30,11 +33,13 @@ async def execute_query(query: str):
     logger.info(f"Executing query: {query}")
     return await database.fetch_all(query=query)
 
+
 # Function to get all table names
 def get_table_names():
     inspector = inspect(engine)
     logger.info("Getting table names")
     return inspector.get_table_names()
+
 
 # Function to get the schema of specific tables
 def get_table_schema(table_name: str):
@@ -42,7 +47,7 @@ def get_table_schema(table_name: str):
     # logger.info(f"Getting schema for table: {table_name}")
     columnData = inspector.get_columns(table_name)
     fk_Data = inspector.get_foreign_keys(table_name)
-    
+
     columns = []    
     for column in columnData:
         columns.append(
@@ -51,7 +56,7 @@ def get_table_schema(table_name: str):
                 "type": column["type"],                
             }
         )
-        
+
     foreign_keys = []
     for fk in fk_Data:
         foreign_keys.append(
@@ -62,7 +67,7 @@ def get_table_schema(table_name: str):
                 "referred_table": fk["referred_table"]
             }
         )
-        
+
     schema = {
         "table_name": table_name,
         "columns": columns,
@@ -70,6 +75,7 @@ def get_table_schema(table_name: str):
     }
     logger.info(f"Schema for table {table_name}: {schema}")
     return schema
+
 
 def get_schema_list(table_names: list[str]):
     schema_list = []

@@ -14,7 +14,8 @@ LOGGING_CONFIG = {
             "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         },
         "detailed": {
-            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s [in %(pathname)s:%(lineno)d]"
+            "format": """%(asctime)s - %(name)s - %(levelname)s - %(message)s 
+                    [in %(pathname)s:%(lineno)d]"""
         }
     },
     "handlers": {
@@ -53,14 +54,18 @@ LOGGING_CONFIG = {
     }
 }
 
+
 def setup_logging():
     logging.config.dictConfig(LOGGING_CONFIG)
+
 
 def get_db_logger():
     return logging.getLogger("db_logs")
 
+
 def get_app_logger():
     return logging.getLogger("app_logs")
+
 
 def get_llm_logger():
     return logging.getLogger("llm_logs")
