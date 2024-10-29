@@ -4,7 +4,8 @@ from pydantic import BaseModel
 from openai import OpenAI
 
 from core.query_planner import PlanList
-from db.database import get_schema_list, get_table_names
+from db.database import get_table_names
+from db.get_schema_list import get_schema_list
 from utils.logging_config import get_llm_logger
 
 load_dotenv()
@@ -21,9 +22,9 @@ class QuerySteps(BaseModel):
     steps: list[QueryStep]
 
 
-def step_maker(query: str, planList: PlanList):
+def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> QuerySteps:
 
-    tables = get_table_names()
+    tables = selected_tables
     schemas = get_schema_list(planList.required_table_names)
 
     prompt = f"""I have a sql db with the following tables: {tables}

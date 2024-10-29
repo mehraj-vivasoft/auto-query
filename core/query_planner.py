@@ -21,9 +21,9 @@ class PlanList(BaseModel):
     required_table_names: list[str]
 
 
-def query_planner(query: str):
+def query_planner(query: str, selected_tables: list[str]) -> PlanList:
 
-    prompt = f"""I have a sql db with the following tables: {get_table_names()}
+    prompt = f"""I have a sql db with the following tables: {selected_tables}
     I want to do the following query: {query}
     please help me with the plan for the query and also tell me the tables 
     that are needed or releted for the query.

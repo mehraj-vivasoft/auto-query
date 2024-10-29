@@ -5,7 +5,8 @@ from openai import OpenAI
 
 from core.query_planner import PlanList
 from core.step_maker import QuerySteps
-from db.database import get_schema_list, get_table_names
+from db.database import get_table_names
+from db.get_schema_list import get_schema_list
 from utils.logging_config import get_llm_logger
 
 load_dotenv()

@@ -4,9 +4,11 @@ from core.output_processor import output_processor
 from core.step_executor import step_executor
 from core.query_planner import query_planner
 from core.step_maker import step_maker
+from core.table_finder.table_selector_from_query import table_selector_from_query
+from db.get_schema_list import get_schema_list
 from db.database import (
     connect_db, disconnect_db, execute_query,
-    get_schema_list, get_table_names
+    get_table_names
 )
 from utils.logging_config import get_app_logger, setup_logging
 from pydantic import BaseModel
@@ -46,7 +48,6 @@ app.add_middleware(
 
 # --------------------------------  ROUTES  -------------------------------- #
 
-
 @app.post("/items/")
 async def read_items(query: ManualQuery):
     results = await execute_query(query)
@@ -66,17 +67,21 @@ def schema(request: SchemaRequest):
 
 @app.get("/")
 def read_root():
+    # table_selector_from_query("Who are the most absent employees?")
     return "Lets go!!"
 
 
 @app.post("/query")
 async def query_in_natural_language(request: QueryRequest):
     
+    # table selector: query -> tables
+    selected_tables = table_selector_from_query(request.query)
+    
     # planner: query -> plan
-    plan = query_planner(request.query)
+    plan = query_planner(request.query, selected_tables)
     
     # step maker: plan -> steps
-    steps = step_maker(request.query, plan)
+    steps = step_maker(request.query, plan, selected_tables)
     
     # executor: steps -> results
     query_result = await step_executor(request.query, steps, plan)
