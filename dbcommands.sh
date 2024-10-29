@@ -20,5 +20,15 @@ apt-get install -y sqlcmd
 
 sqlcmd -S localhost -U SA -P "Helloworld1?" -Q "RESTORE DATABASE huduri_production20240930 FROM DISK = '/var/opt/mssql/backup/huduri_production20240930.bak' WITH MOVE 'pihrxyz_production' TO '/var/opt/mssql/data/huduri_production20240930.mdf', MOVE 'pihrxyz_production_log' TO '/var/opt/mssql/data/huduri_production20240930_log.ldf', REPLACE"
 
+exit
+
+exit
+
 # pihrxyz_production
-# pihrxyz_production_log
+# pihrxyz_production_log 
+
+# host: localhost
+# username: SA
+# password: Helloworld1?
+# database: huduri_production20240930
+# port: 1433

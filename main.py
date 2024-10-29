@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from core.output_processor import output_processor
 from core.step_executor import step_executor
 from core.query_planner import query_planner
 from core.step_maker import step_maker
@@ -9,6 +10,7 @@ from db.database import (
 )
 from utils.logging_config import get_app_logger, setup_logging
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 
 class QueryRequest(BaseModel):
@@ -25,22 +27,28 @@ class ManualQuery(BaseModel):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    setup_logging()   
-    await connect_db()            
-    logger = get_app_logger()     
+    setup_logging()
+    await connect_db()
+    logger = get_app_logger()
     logger.info("Application started")
     yield
     await disconnect_db()
     logger.info("Application stopped")
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --------------------------------  ROUTES  -------------------------------- #
 
 
 @app.post("/items/")
 async def read_items(query: ManualQuery):
-    # query = ""
     results = await execute_query(query)
     return results
 
@@ -63,13 +71,21 @@ def read_root():
 
 @app.post("/query")
 async def query_in_natural_language(request: QueryRequest):
+    
     # planner: query -> plan
     plan = query_planner(request.query)
+    
     # step maker: plan -> steps
     steps = step_maker(request.query, plan)
+    
     # executor: steps -> results
     query_result = await step_executor(request.query, steps, plan)
-    # if query_result.startswith("Error"):
-    #     return query_result
-    # results -> response
-    return query_result
+    
+    if query_result.startswith("Error"):
+        return query_result
+    
+    # results -> llm response
+    processed_output = output_processor(request.query, query_result)  
+    
+    # return query_result
+    return {"result": processed_output, "query_result": query_result, "steps": steps, "plan": plan, }

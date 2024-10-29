@@ -3,3 +3,5 @@ python-dotenv
 openai
 sqlalchemy
 databases
+pyodbc
+uvicorn
