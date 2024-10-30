@@ -35,6 +35,24 @@ LOGGING_CONFIG = {
             "filename": "logs/error.log",
             "formatter": "detailed",
             "level": "ERROR"
+        },
+        "db_logs": {
+            "class": "logging.FileHandler",
+            "filename": "logs/db.log",
+            "formatter": "detailed",
+            "level": "DEBUG"
+        },
+        "app_logs": {
+            "class": "logging.FileHandler",
+            "filename": "logs/app.log",
+            "formatter": "detailed",
+            "level": "DEBUG"
+        },
+        "llm_logs": {
+            "class": "logging.FileHandler",
+            "filename": "logs/llm.log",
+            "formatter": "detailed",
+            "level": "DEBUG"
         }
     },
     "loggers": {
@@ -44,12 +62,22 @@ LOGGING_CONFIG = {
         },
         "app": {
             "level": "DEBUG",
-            "handlers": ["console", "file_info", "file_error"],
+            "handlers": ["app_logs"],
+            "propagate": False
+        },
+        "db_logs": {
+            "level": "DEBUG",
+            "handlers": ["db_logs"],
+            "propagate": False
+        },
+        "llm_logs": {
+            "level": "DEBUG",
+            "handlers": ["llm_logs"],
             "propagate": False
         }
     },
     "root": {
-        "level": "DEBUG",
+        "level": "INFO",
         "handlers": ["console", "file_info", "file_error"]
     }
 }
@@ -64,7 +92,7 @@ def get_db_logger():
 
 
 def get_app_logger():
-    return logging.getLogger("app_logs")
+    return logging.getLogger("app")
 
 
 def get_llm_logger():

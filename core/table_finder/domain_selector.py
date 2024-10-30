@@ -16,14 +16,14 @@ class SelectedDomainResponseFormat(BaseModel):
 def domain_selector(query: str, domains: list[str]) -> list[str]:
     """
     Returns the relevant domains from the list of domains based on the query
-    """
-    
-    return domains
+    """        
 
     prompt = f"""I have a sql db with the following schemas or domains: {domains}
     => My goal is to do the following query: {query}    
     => please help me to know that which domains are releted to the query.
     """
+    
+    get_llm_logger().info(f"Selecting relevent domains using llm for query: {query[:15]}...")
 
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
@@ -37,7 +37,7 @@ def domain_selector(query: str, domains: list[str]) -> list[str]:
         response_format=SelectedDomainResponseFormat,
     )
 
-    selectedDomains = completion.choices[0].message.parsed['selectedDomains']
+    selectedDomains = completion.choices[0].message.parsed['selectedDomains']        
 
     get_llm_logger().info(f"Selected domains FROM AI : {selectedDomains}")
 

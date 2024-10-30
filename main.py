@@ -74,23 +74,41 @@ def read_root():
 @app.post("/query")
 async def query_in_natural_language(request: QueryRequest):
     
+    logger = get_app_logger()    
+    logger.info(f"Received query: {request.query}")    
+    
     # table selector: query -> tables
-    selected_tables = table_selector_from_query(request.query)
+    selected_tables = table_selector_from_query(request.query)        
+    
+    logger.info(f"Calling Query Planner agent")
     
     # planner: query -> plan
     plan = query_planner(request.query, selected_tables)
     
+    logger.info(f"Calling Step Maker agent")
+    
     # step maker: plan -> steps
     steps = step_maker(request.query, plan, selected_tables)
     
+    logger.info(f"Calling Step Executor agent")
+    
     # executor: steps -> results
-    query_result = await step_executor(request.query, steps, plan)
+    query_result = await step_executor(request.query, steps, plan, selected_tables)
     
     if query_result.startswith("Error"):
+        logger.error(f"Error in query execution: {query_result}")
         return query_result
+    
+    logger.info(f"Calling Output Processor agent")
     
     # results -> llm response
     processed_output = output_processor(request.query, query_result)  
+        
+    logger.info(f">>>>>>> Output Processor agent completed-----------------------------------")
+    logger.info(f"Result: {processed_output}")
+    logger.info(f"Query Result: {query_result}")
+    logger.info(f"Steps: {steps}")
+    logger.info(f"Plan: {plan}")    
     
     # return query_result
-    return {"result": processed_output, "query_result": query_result, "steps": steps, "plan": plan, }
+    return {"result": processed_output, "query_result": query_result, "steps": steps, "plan": plan }

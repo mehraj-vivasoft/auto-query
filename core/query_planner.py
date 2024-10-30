@@ -25,9 +25,11 @@ def query_planner(query: str, selected_tables: list[str]) -> PlanList:
 
     prompt = f"""I have a sql db with the following tables: {selected_tables}
     I want to do the following query: {query}
-    please help me with the plan for the query and also tell me the tables 
-    that are needed or releted for the query.
+    please help me with the plan for the query and also tell me how to use 
+    tables that are needed or releted for the query.
     """
+    
+    get_llm_logger().info(f"Planning the query using llm")
 
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",

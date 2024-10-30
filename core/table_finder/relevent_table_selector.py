@@ -16,14 +16,14 @@ class SelectedTableResponseFormat(BaseModel):
 def relevent_table_selector(query: str, tables: list[str]) -> list[str]:
     """
     Returns the relevant tables from the list of tables based on the query
-    """    
-
-    return tables
+    """        
 
     prompt = f"""I have a sql db which contains following tables: {tables}
     => My goal is to do the following query: {query}    
     => please help me to know that which tables are needed for the query.
     """
+    
+    get_llm_logger().info(f"Selecting relevent tables from {tables[0].split('.')[0]} domain")
 
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",

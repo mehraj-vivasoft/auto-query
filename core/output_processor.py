@@ -21,6 +21,8 @@ def output_processor(query: str, output: any) -> str:
     {output}
     Now you have to process the output of the query and Give the response of the user query in natural language.
     """
+    
+    get_llm_logger().info(f"Processing output of the query")
 
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",

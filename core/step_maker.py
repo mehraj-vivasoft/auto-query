@@ -6,7 +6,7 @@ from openai import OpenAI
 from core.query_planner import PlanList
 from db.database import get_table_names
 from db.get_schema_list import get_schema_list
-from utils.logging_config import get_llm_logger
+from utils.logging_config import get_app_logger, get_llm_logger
 
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -25,15 +25,19 @@ class QuerySteps(BaseModel):
 def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> QuerySteps:
 
     tables = selected_tables
+    
+    get_app_logger().info(f"Getting Schema for tables: {PlanList.required_table_names}")    
     schemas = get_schema_list(planList.required_table_names)
 
-    prompt = f"""I have a sql db with the following tables: {tables}
+    prompt = f"""I have a sql db with the following relevent tables: {tables}
     => My goal is to do the following query: {query}
     => And Here are the required schemas of the tables: {schemas}
     => I also have the following plan: {planList.plans}    
     => please help me with the write the query from the plan.
     make sure the last query is the final query that reaches the goal.
     """
+    
+    get_llm_logger().info(f"Generating Steps with query using llm")
 
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",

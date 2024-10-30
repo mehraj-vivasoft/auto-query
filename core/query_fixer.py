@@ -5,7 +5,6 @@ from openai import OpenAI
 
 from core.query_planner import PlanList
 from core.step_maker import QuerySteps
-from db.database import get_table_names
 from db.get_schema_list import get_schema_list
 from utils.logging_config import get_llm_logger
 
@@ -19,10 +18,10 @@ class FixQuery(BaseModel):
 
 
 async def query_fixer(
-    query: str, planList: PlanList, queryList: QuerySteps, error_message: str
+    query: str, planList: PlanList, queryList: QuerySteps, error_message: str, selected_tables: list[str]
 ):
 
-    tables = get_table_names()
+    tables = selected_tables
     schemas = get_schema_list(planList.required_table_names)
 
     # => I did followed the following steps to do the query: {queryList}    
@@ -37,7 +36,7 @@ async def query_fixer(
      and also reaches the goal.
     """
 
-    get_llm_logger().info("FIXING QUERY")
+    get_llm_logger().info("FIXING QUERY USING LLM")
 
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",

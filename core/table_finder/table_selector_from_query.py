@@ -1,31 +1,18 @@
 import json
 from core.table_finder.domain_selector import domain_selector
 from core.table_finder.relevent_table_selector import relevent_table_selector
+from utils.logging_config import get_app_logger, get_db_logger
 
-data = json.load(open("dataset/tables.json", "r"))
+TABLE_DATASET_PATH = "dataset/tables.json"
 
-def read_and_iterate_json(file_path):
-    # Read JSON data from file
-    # with open(file_path, 'r') as file:
-    #     data = json.load(file)
-    
-    # Iterate over the data
-    for schema, tables in data.get("tables", {}).items():
-        print(f"Schema: {schema}")
-        for table in tables:
-            print(f" - Table: {table}")
+data = json.load(open(TABLE_DATASET_PATH, "r"))
+get_db_logger().info("Loaded table dataset from ", TABLE_DATASET_PATH)
             
-def get_domains(file_path):
-    # Read JSON data from file
-    # with open(file_path, 'r') as file:
-    #     data = json.load(file)
-        
-    domains = []
-    
-    # Iterate over the data
+def get_domains():
+    domains = []    
     for domain, tables in data.get("tables", {}).items():
-        domains.append(domain)
-    
+        domains.append(domain)    
+        
     return domains
 
 
@@ -33,11 +20,11 @@ def table_selector_from_query(query: str):
     """
     Find relevent tables from the table repository in dataset/tables.json format
     """
-    domains = get_domains("dataset/tables.json")
-    print("Available domains:", domains)
+    domains = get_domains()
+    get_db_logger().info("Available domains:", domains)
     
     selected_domains = domain_selector(query, domains)
-    print("Selected domains:", selected_domains)
+    get_app_logger().info("Selected relevent domains:", selected_domains)
     
     selected_tables = []
     for domain in selected_domains:        
@@ -45,10 +32,10 @@ def table_selector_from_query(query: str):
         relevent_tables = relevent_table_selector(query, tables = [prefix + table for table in data["tables"][domain]])
         selected_tables += relevent_tables    
     
-    print("Selected tables:", selected_tables)
+    get_app_logger().info("Selected relevent tables:", selected_tables)
     
     return selected_tables
     
 
-if __name__ == "__main__":
-    table_selector_from_query("Who are the most absent employees?")
+# if __name__ == "__main__":
+#     table_selector_from_query("Who are the most absent employees?")
