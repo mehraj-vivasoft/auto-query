@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, inspect
+from sqlalchemy import create_engine, MetaData, inspect, text
 from sqlalchemy.orm import sessionmaker
 from typing import Dict, List, Any
 from db.connection_string import get_connection_string
@@ -24,8 +24,9 @@ async def disconnect_db():
 
 def execute_query(query: str):
     """Function to execute SQL queries synchronously"""
+    get_db_logger().info(f"Executing query: {query}")
     with SessionLocal() as session:
-        result = session.execute(query)
+        result = session.execute(text(query))
         logger.info(f"Query executed: {query}")
         return result.fetchall()
 

@@ -26,7 +26,7 @@ def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> Qu
 
     tables = selected_tables
     
-    get_app_logger().info(f"Getting Schema for tables: {PlanList.required_table_names}")    
+    get_app_logger().info(f"Getting Schema for tables: {planList.required_table_names}")    
     schemas = get_schema_list(planList.required_table_names)
 
     prompt = f"""I have a sql db with the following relevent tables: {tables}

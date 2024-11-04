@@ -1,5 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
+from core.error_processsor import error_processor
 from core.output_processor import output_processor
 from core.step_executor import step_executor
 from core.query_planner import query_planner
@@ -49,8 +51,8 @@ app.add_middleware(
 # --------------------------------  ROUTES  -------------------------------- #
 
 @app.post("/items/")
-async def read_items(query: ManualQuery):
-    results = await execute_query(query)
+def read_items(query: ManualQuery):
+    results = execute_query(query)
     return results
 
 
@@ -69,6 +71,16 @@ def schema(request: SchemaRequest):
 def read_root():
     # table_selector_from_query("Who are the most absent employees?")
     return "Lets go!!"
+
+def convert_to_serializable(obj):
+    if isinstance(obj, dict):
+        return {k: convert_to_serializable(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_to_serializable(i) for i in obj]
+    elif hasattr(obj, "__dict__"):
+        return convert_to_serializable(vars(obj))
+    else:
+        return obj
 
 
 @app.post("/query")
@@ -95,9 +107,17 @@ async def query_in_natural_language(request: QueryRequest):
     # executor: steps -> results
     query_result = await step_executor(request.query, steps, plan, selected_tables)
     
-    if query_result.startswith("Error"):
+    query_result_str = str(query_result)
+    if query_result_str.startswith("Error"):
         logger.error(f"Error in query execution: {query_result}")
-        return query_result
+        error_explaination = error_processor(request.query, query_result_str, steps.steps[len(steps.steps) - 1].sql_query)
+        response = {
+            "result": error_explaination,    
+            "error": query_result_str,   
+            "steps": convert_to_serializable(steps),
+            "plan": convert_to_serializable(plan)
+        }      
+        return response
     
     logger.info(f"Calling Output Processor agent")
     
@@ -108,7 +128,14 @@ async def query_in_natural_language(request: QueryRequest):
     logger.info(f"Result: {processed_output}")
     logger.info(f"Query Result: {query_result}")
     logger.info(f"Steps: {steps}")
-    logger.info(f"Plan: {plan}")    
+    logger.info(f"Plan: {plan}")  
+    
+    response = {
+        "result": processed_output,    
+        "QueryResult": query_result_str,   
+        "steps": convert_to_serializable(steps),
+        "plan": convert_to_serializable(plan)
+    }  
     
     # return query_result
-    return {"result": processed_output, "query_result": query_result, "steps": steps, "plan": plan }
+    return response

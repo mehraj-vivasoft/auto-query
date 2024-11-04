@@ -11,6 +11,7 @@ get_db_logger().info("Loaded table dataset from ", TABLE_DATASET_PATH)
 def get_domains():
     domains = []    
     for domain, tables in data.get("tables", {}).items():
+        # TODO: Add more conditions to filter out irrelevant domains
         domains.append(domain)    
         
     return domains

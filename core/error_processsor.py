@@ -14,12 +14,13 @@ class NaturalLanguageResponse(BaseModel):
     natural_language_response: str
 
 
-def output_processor(query: str, output: any) -> str:
+def error_processor(query: str, errorMsg: str, sql_query: str) -> str:
 
     prompt = f"""The natural language query of the user is : {query}
-    After executing the query in the database, the output is as follows:
-    {output}
-    Now you have to process the output of the query and Give the response of the user query in natural language.
+    and the SQL query is : {sql_query}
+    After executing the query in the database, there has error as follows:
+    {errorMsg}
+    Now, process the error message and explain the error and why it occured in natural language. 
     """
     
     get_llm_logger().info(f"Processing output of the query")
@@ -27,9 +28,9 @@ def output_processor(query: str, output: any) -> str:
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": """You are a natural language processing AI that helps with SQL queries. 
-            I will provide you a natural language query and the response after executing the query in the database.
-            Your task is to process the output of the query and Give the response of the user query in natural language."""},
+            {"role": "system", "content": """You are a natural language processing AI that helps explaining errors in SQL queries. 
+            I will provide you a natural language query, a sql query and ther error message after executing the query in the database.
+            Your task is to process the error message and explain the error and why it occured to the user in natural language."""},
             {"role": "user", "content": prompt}
         ],
         response_format=NaturalLanguageResponse,

@@ -32,7 +32,7 @@ async def query_fixer(
     => I did the following query:
      {queryList.steps[-1].sql_query}
     => But, I got this error while running the final query: {error_message}
-    => please fix the final query and return a query which is correct
+    => please fix the query and return a query which is correct
      and also reaches the goal.
     """
 
@@ -42,9 +42,9 @@ async def query_fixer(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": """You are a sql query fixer.
-             You will be given a query with a query plan and a
-             error message while running the last and final combined query.
-             Fix the sql query to reach the goal and return in the query
+             You will be given a natural language query, a sql query for that and a
+             error message while running the query. Fix the sql query by analyzing 
+             the error message to reach the goal and return in the query
              according to the response format ."""},
             {"role": "user", "content": prompt}
         ],

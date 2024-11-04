@@ -37,7 +37,7 @@ def domain_selector(query: str, domains: list[str]) -> list[str]:
         response_format=SelectedDomainResponseFormat,
     )
 
-    selectedDomains = completion.choices[0].message.parsed['selectedDomains']        
+    selectedDomains = completion.choices[0].message.parsed.selectedDomains
 
     get_llm_logger().info(f"Selected domains FROM AI : {selectedDomains}")
 

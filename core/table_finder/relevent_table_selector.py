@@ -37,7 +37,7 @@ def relevent_table_selector(query: str, tables: list[str]) -> list[str]:
         response_format=SelectedTableResponseFormat,
     )
 
-    selectedTables = completion.choices[0].message.parsed['selectedTables']
+    selectedTables = completion.choices[0].message.parsed.selectedTables
 
     get_llm_logger().info(f"Selected tables FROM AI : {selectedTables}")
 

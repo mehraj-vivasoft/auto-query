@@ -12,7 +12,7 @@ async def step_executor(query: str, queryList: QuerySteps, planList: PlanList, s
 
     try: 
         logger.info(f"Executing query : {queryList.steps[number_of_steps - 1].sql_query}")
-        results = await execute_query(
+        results = execute_query(
             queryList.steps[number_of_steps - 1].sql_query
         )
         logger.info(f"Query result : {results}")
@@ -23,7 +23,7 @@ async def step_executor(query: str, queryList: QuerySteps, planList: PlanList, s
         fixed_query = await query_fixer(query, planList, queryList, str(e), selected_tables)
         try:
             logger.info(f"Executing fixed query : {fixed_query}")
-            results = await execute_query(fixed_query)
+            results = execute_query(fixed_query)
             logger.info(f"Query result : {results}")
             return results
         except Exception as e:
