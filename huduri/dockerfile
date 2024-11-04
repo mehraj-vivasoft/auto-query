@@ -1,0 +1,32 @@
+# Dockerfile
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+# Set environment variables
+ENV ACCEPT_EULA=Y
+ENV SA_PASSWORD=Helloworld1?
+ENV MSSQL_PID=Developer
+
+# Copy the restore script into the container
+COPY restore.sh /restore.sh
+
+# Install required packages
+USER root
+RUN apt-get update && \
+    apt-get install -y sudo curl git gnupg2 software-properties-common apt-transport-https && \
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/prod.list)" && \
+    apt-get update && \
+    apt-get install -y sqlcmd && \
+    mkdir -p /var/opt/mssql/backup && \
+    chmod +x /restore.sh
+
+# copy backup file
+COPY huduri_production20240930.bak /var/opt/mssql/backup/huduri_production20240930.bak
+
+# Start SQL Server and wait for it to be ready before running the restore script
+RUN /opt/mssql/bin/sqlservr & \
+    sleep 5 && \
+    /restore.sh
+
+# Start SQL Server
+CMD /opt/mssql/bin/sqlservr
