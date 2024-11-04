@@ -3,3 +3,47 @@ logs
 .env
 venv
 *.pyc
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+make-dataset/node_modules
+make-dataset/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+make-dataset/coverage
+
+# next.js
+make-dataset/.next/
+make-dataset/out/
+
+# production
+make-dataset/build
+
+# misc
+.DS_Store
+make-dataset/*.pem
+
+# debug
+make-dataset/npm-debug.log*
+make-dataset/yarn-debug.log*
+make-dataset/yarn-error.log*
+
+# env files (can opt-in for commiting if needed)
+make-dataset/.env
+
+# vercel
+make-dataset/.vercel
+
+# typescript
+make-dataset/*.tsbuildinfo
+make-dataset/next-env.d.ts
+
+
+make-dataset/exported-datasets

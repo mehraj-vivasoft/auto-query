@@ -32,6 +32,21 @@ services:
       - huduri
     networks:
       - app-network
+  
+  make-dataset:
+    build:
+      context: ./make-dataset
+      dockerfile: Dockerfile
+    container_name: make-dataset
+    env_file: 
+      - ./make-dataset/.env
+    platform: linux/amd64
+    ports:
+      - "3000:3000"
+    depends_on:
+      - fastapi
+    networks:
+      - app-network
 
 networks:
   app-network:
