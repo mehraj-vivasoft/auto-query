@@ -21,6 +21,9 @@ def error_processor(query: str, errorMsg: str, sql_query: str) -> str:
     After executing the query in the database, there has error as follows:
     {errorMsg}
     Now, process the error message and explain the error and why it occured in natural language. 
+    In the explanation do not use technical terms. just try to explain the error in easy way that
+    the user can understand and if the query contains ? then tell the user to which values are missing in the query.
+    The user should easyly understand the error and why it occured and what data is missing in the query.
     """
     
     get_llm_logger().info(f"Processing output of the query")

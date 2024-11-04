@@ -14,7 +14,7 @@ client = OpenAI(api_key=openai_api_key)
 
 
 class FixQuery(BaseModel):
-    query: str
+    fixed_query: str
 
 
 async def query_fixer(
@@ -44,14 +44,14 @@ async def query_fixer(
             {"role": "system", "content": """You are a sql query fixer.
              You will be given a natural language query, a sql query for that and a
              error message while running the query. Fix the sql query by analyzing 
-             the error message to reach the goal and return in the query
+             the error message to reach the goal and return in the fixed query
              according to the response format ."""},
             {"role": "user", "content": prompt}
         ],
         response_format=FixQuery,
     )
 
-    fixed_query = completion.choices[0].message.parsed.query
+    fixed_query = completion.choices[0].message.parsed.fixed_query
 
     get_llm_logger().info(f"FIXED QUERY FROM AI : {fixed_query}")
 

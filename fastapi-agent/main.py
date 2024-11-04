@@ -15,6 +15,7 @@ from db.database import (
 from utils.logging_config import get_app_logger, setup_logging
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 
 class QueryRequest(BaseModel):
@@ -117,7 +118,7 @@ async def query_in_natural_language(request: QueryRequest):
             "steps": convert_to_serializable(steps),
             "plan": convert_to_serializable(plan)
         }      
-        return response
+        return JSONResponse(status_code=500, content=response)
     
     logger.info(f"Calling Output Processor agent")
     

@@ -1,9 +1,38 @@
+version: '3.8'  # Specify the version of Docker Compose
+
 services:
-  sqlserver:
+  huduri:
     build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
+      context: ./huduri
+      dockerfile: Dockerfile      
+    container_name: huduri
     ports:
       - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Helloworld1?"
+      MSSQL_PID: "Developer"
+    volumes:
+      - ./huduri/huduri_production20240930.bak:/var/opt/mssql/backup/huduri_production20240930.bak
+    platform: linux/amd64
+    networks:
+      - app-network
+
+  fastapi:
+    build:
+      context: ./fastapi-agent
+      dockerfile: Dockerfile
+    container_name: fastapi_server
+    ports:
+      - "8000:8000"
+    env_file: 
+      - ./fastapi-agent/.env 
+    platform: linux/amd64
+    depends_on:
+      - huduri
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
