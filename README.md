@@ -33,10 +33,21 @@ docker-compose up --build
 
 ### Accessing the Application
 
-- Frontend: [http://localhost:3000](http://localhost:3000)
+- Dataset Maker Frontend: [http://localhost:3000](http://localhost:3000)
 - Backend: [http://localhost:8000](http://localhost:8000)
 
 The application will automatically migrate the database and start the MSSQL server on its proper port.
+
+### Endpoint to Query the Database
+
+- POST - `/query` - Query the database in natural language. The request body should contain the query in the following format:
+    ```json
+    {
+        "query": "How many types of holidays are there?"
+    }
+    ```
+    The response will contain the result of the query.
+
 
 ### Stopping the Application
 
