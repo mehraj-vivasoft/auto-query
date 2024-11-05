@@ -20,6 +20,13 @@ class PlanList(BaseModel):
     plans: list[Plan]    
     required_table_names: list[str]
 
+def _plan_to_str(plan: Plan) -> str:
+    print(plan)
+    return f"Plan Description: {plan.plan_description}\nPlan Outcome: {plan.plan_outcome}\n"
+
+def plan_list_to_str(plans: list[Plan]) -> str:
+    print(plans)    
+    return "\n".join([_plan_to_str(plan) for plan in plans])
 
 def query_planner(query: str, selected_tables: list[str]) -> PlanList:
 

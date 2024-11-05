@@ -24,6 +24,12 @@ export default function Home() {
         >
           See Dataset
         </Link>
+        <Link
+          href={"query"}
+          className="mt-2 px-6 bg-slate-950 text-white rounded-md py-2 text-xl"
+        >
+          Query Now
+        </Link>
       </div>
     </div>
   );

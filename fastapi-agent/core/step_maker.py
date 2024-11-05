@@ -21,6 +21,12 @@ class QueryStep(BaseModel):
 class QuerySteps(BaseModel):
     steps: list[QueryStep]
 
+def _step_to_str(step: QueryStep) -> str:
+    return f"Goal: {step.goal}\nSQL Query: {step.sql_query}\n"
+
+def steps_to_str(steps: list[QueryStep]) -> str:
+    return "\n".join([_step_to_str(step) for step in steps])
+
 
 def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> QuerySteps:
 
