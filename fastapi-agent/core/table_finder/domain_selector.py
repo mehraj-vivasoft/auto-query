@@ -19,7 +19,7 @@ def domain_selector(query: str, domains: list[str]) -> list[str]:
     """        
 
     prompt = f"""I have a sql db with the following schemas or domains: {domains}
-    => My goal is to do the following query: {query}    
+    => My goal is to do the following query: {query}        
     => please help me to know that which domains are releted to the query.
     """
     

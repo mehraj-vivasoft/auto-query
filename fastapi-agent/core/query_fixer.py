@@ -34,6 +34,8 @@ async def query_fixer(
     => But, I got this error while running the final query: {error_message}
     => please fix the query and return a query which is correct
      and also reaches the goal.
+      One note if the query is about any specific company 
+    first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName = 'name_of_company'
     """
 
     get_llm_logger().info("FIXING QUERY USING LLM")
