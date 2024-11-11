@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import useStreamResponse from "./useStreamQuery";
-import { StreamDataProcessor } from "./streamDataProcessor";
 
 const QueryPage = () => {
   const [query, setQuery] = React.useState("");
@@ -11,45 +10,50 @@ const QueryPage = () => {
   });
 
   return (
-    <div className="flex flex-col items-center w-full gap-4 mt-12">
-      <h1>AutoQuery</h1>
-      <textarea
-        name="query"
-        id="query"
-        placeholder="ENTER YOUR QUERY HERE"
-        className="w-1/2 h-48 p-4 border border-slate-950 rounded-md text-center"
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-        }}
-      />
-      <button
-        className="bg-slate-950 text-white px-4 py-2 rounded-md"
-        onClick={() => {
-          console.log(query);
-          runQuery(query);
-        }}
-      >
-        Run Query
-      </button>
-
-      {responses.length > 0 && (
-        <div className="w-3/4 p-4 border bg-slate-200 rounded-md text-center flex flex-col gap-2">
-          {responses.map((response, index) => (
-            <p
-              key={index}
-              className={`bg-slate-950 text-white px-4 py-4 rounded-md w-full text-md text-left tracking-wider ${
-                index === responses.length - 1 ? "bg-red-950 text-yellow-300" : ""
-              }`}
-            >
-              {/* <StreamDataProcessor text={response} /> */}
-              {response}
-            </p>
-          ))}
+    <div className="grid md:grid-cols-3 w-full">
+      <div className="px-6 flex flex-col justify-start items-center min-h-screen gap-6 bg-slate-200">
+        <img
+          src="auto query white.png"
+          alt="auto query"
+          className="h-36 mt-12"
+        />
+        <textarea
+          name="query"
+          id="query"
+          placeholder="ENTER YOUR QUERY HERE"
+          className="w-full h-32 md:h-64 p-4 border border-slate-950 rounded-md text-center bg-transparent"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+          }}
+        />
+        <div className="w-full flex items-start justify-end -mt-3">
+          <button
+            className="bg-slate-950 text-white px-4 py-2 rounded-md"
+            onClick={() => {
+              console.log(query);
+              runQuery(query);
+            }}
+          >
+            Run Query
+          </button>
         </div>
-      )}
+      </div>
 
-      {isLoading && <p>Loading...</p>}
+      <div className="md:col-span-2 p-4 bg-slate-950 text-white rounded-md text-center flex flex-col gap-2 overflow-y-scroll">
+        {responses.map((response, index) => (
+          <p
+            key={index}
+            className={`px-4 py-4 rounded-md w-full text-md text-left tracking-wider ${
+              index === responses.length - 1 ? "text-red-950 bg-yellow-300 font-bold" : "bg-slate-50 text-slate-950"
+            }`}
+          >
+            {/* <StreamDataProcessor text={response} /> */}
+            {response}
+          </p>
+        ))}
+        {isLoading && <p className="text-cyan-400">Loading...</p>}
+      </div>      
     </div>
   );
 };
