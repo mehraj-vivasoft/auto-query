@@ -24,7 +24,7 @@ RUN apt-get update && \
 COPY huduri_production20240930.bak /var/opt/mssql/backup/huduri_production20240930.bak
 
 # Start SQL Server and wait for it to be ready before running the restore script
-RUN /opt/mssql/bin/sqlservr && \
+RUN /opt/mssql/bin/sqlservr & \
     sleep 5 && \
     /restore.sh
 
