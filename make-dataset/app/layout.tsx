@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Domine } from "next/font/google";
+import { Toaster } from 'react-hot-toast';
 import "./globals.css";
 
 const tinos = Domine({
@@ -23,6 +24,7 @@ export default function RootLayout({
         className={`${tinos.className} antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

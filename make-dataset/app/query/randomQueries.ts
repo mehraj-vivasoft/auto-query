@@ -1,0 +1,15 @@
+export const randomQueries = [
+    "How many employee does 'incepta Ltd' have",
+    "How many employees does company id 1 have?",
+    "What are the holidays present in the db? / how many",
+    "Which employee joined first in 'incepta Ltd'",
+    "What is the name of the employee joined first in 'incepta Ltd'",
+    "What are the banks associated with 'PiHR Limited'",
+    "What types of leaves does company id 1 have",
+    "What is the name of the employee took the most totalbreaktimemin in company id 1",
+    "How many rosters does company id 1 has",
+    "What is the name of the supervisor of employee id 8",
+    "I am a supervisor and my employee id is 3. How many employee is under my supervision",
+    "What are the talent types under company id 1",
+    "What is the name of the employee who has taken the most number of leaves in company id 1",
+  ];

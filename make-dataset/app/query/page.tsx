@@ -2,6 +2,8 @@
 import React from "react";
 import useStreamResponse from "./useStreamQuery";
 import { StreamDataProcessor } from "./streamDataProcessor";
+import { FaRandom } from "react-icons/fa";
+import { randomQueries } from "./randomQueries";
 
 const QueryPage = () => {
   const [query, setQuery] = React.useState("");
@@ -11,13 +13,15 @@ const QueryPage = () => {
   });
 
   return (
-    <div className="grid md:grid-cols-3 w-full">
-      <div className="px-6 flex flex-col justify-start items-center min-h-screen gap-6 bg-slate-200">
-        <img
-          src="auto query white.png"
-          alt="auto query"
-          className="h-36 mt-12"
-        />
+    <div className="grid md:grid-cols-3 w-full min-h-screen">
+      <div className="px-6 flex flex-col justify-start items-center md:min-h-screen gap-6 bg-slate-200 pb-6">
+        <a href="/">
+          <img
+            src="auto query white.png"
+            alt="auto query"
+            className="h-36 mt-12"
+          />
+        </a>
         <textarea
           name="query"
           id="query"
@@ -28,7 +32,18 @@ const QueryPage = () => {
             setQuery(e.target.value);
           }}
         />
-        <div className="w-full flex items-start justify-end -mt-3">
+        <div className="w-full flex items-center gap-3 justify-end -mt-3">
+          <button
+            className="bg-slate-950 text-white px-4 py-2 rounded-md flex items-center gap-2"
+            onClick={() => {
+              setQuery(
+                randomQueries[Math.floor(Math.random() * randomQueries.length)]
+              );
+            }}
+          >
+            <FaRandom />
+            Random
+          </button>
           <button
             className="bg-slate-950 text-white px-4 py-2 rounded-md"
             onClick={() => {
@@ -46,15 +61,17 @@ const QueryPage = () => {
           <p
             key={index}
             className={`px-4 py-4 rounded-md w-full text-md text-left tracking-wider ${
-              index === responses.length - 1 ? "text-red-950 bg-yellow-300 font-bold" : "bg-[#ffffff08] text-white border-[1px] border-[#ffffff25]"
+              index === responses.length - 1
+                ? "text-red-950 bg-yellow-300 font-bold"
+                : "bg-[#ffffff08] text-white border-[1px] border-[#ffffff25]"
             }`}
           >
             <StreamDataProcessor text={response} />
             {/* {response} */}
           </p>
         ))}
-        {isLoading && <p className="text-cyan-400">Loading...</p>}        
-      </div>      
+        {isLoading && <p className="text-cyan-400">Loading...</p>}
+      </div>
     </div>
   );
 };
