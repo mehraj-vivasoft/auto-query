@@ -155,34 +155,34 @@ async def streamer(request: QueryRequest):
     logger = get_app_logger()    
     logger.info(f"Received query: {request.query}")    
     
-    yield "received query"
+    yield "<<GGWWP>>QUERY RECEIVED: "
     
-    yield "Calling Table Selector agent"
+    yield "<<GGWWP>>CALLING TABLE SELECTOR AGENT"
     
     # table selector: query -> tables
     selected_tables = table_selector_from_query(request.query)
             
-    yield "Selected Tables are: " + str(selected_tables)
+    yield "<<GGWWP>>Selected Tables are: " + str(selected_tables)
     
     logger.info(f"Calling Query Planner agent")
     
-    yield "Calling Query Planner agent"
+    yield "<<GGWWP>>CALLING QUERY PLANNER AGENT"
     
     # planner: query -> plan
     plan = query_planner(request.query, selected_tables)
         
-    yield "Created Plan is : " + str(plan)
+    yield "<<GGWWP>>Created Plan is : " + str(plan.model_dump_json())
     
-    yield "Calling Step Maker agent"
     
+    yield "<<GGWWP>>CALLING STEP MAKER AGENT"
     logger.info(f"Calling Step Maker agent")
     
     # step maker: plan -> steps
     steps = step_maker(request.query, plan, selected_tables)
     
-    yield "Created Steps are : " + str(steps)
+    yield "<<GGWWP>>Created Steps are : " + str(steps.model_dump_json())
     
-    yield "Calling Step Executor agent"
+    yield "<<GGWWP>>CALLING STEP EXECUTOR AGENT"
     
     logger.info(f"Calling Step Executor agent")
     
@@ -193,7 +193,7 @@ async def streamer(request: QueryRequest):
     query_result_str = str(query_result)
     if query_result_str.startswith("Error"):
         logger.error(f"Error in query execution: {query_result}")
-        yield "Error in query execution calling error processor agent"
+        yield "<<GGWWP>>ERROR IN QUERY EXECUTION - CALLING ERROR PROCESSOR AGENT"
         error_explaination = error_processor(request.query, query_result_str, steps.steps[len(steps.steps) - 1].sql_query)
         response = {
             "result": error_explaination,    
@@ -201,25 +201,25 @@ async def streamer(request: QueryRequest):
             "steps": convert_to_serializable(steps),
             "plan": convert_to_serializable(plan)
         }      
-        yield "Error reason: " + str(error_explaination)
+        yield "<<GGWWP>>ERROR REASON: " + str(error_explaination)
         
-        yield "COMPLETED _ END OF STREAM _ FINAL RESULT"
+        yield "<<GGWWP>>COMPLETED _ END OF STREAM _ FINAL RESULT"
         
-        yield str(response)
+        # return str(response)
         
     
-    yield "Query Executed successfully"
+    yield "<<GGWWP>>QUERY EXECUTED SUCCESSFULLY"
     
-    yield "Query Result: " + str(query_result)
+    yield "<<GGWWP>>Query Result: " + str(query_result)
     
-    yield "Calling Output Processor agent"
+    yield "<<GGWWP>>CALLING OUTPUT PROCESSOR AGENT"
     
     logger.info(f"Calling Output Processor agent")
     
     # results -> llm response
     processed_output = output_processor(request.query, query_result)  
     
-    yield "Output Processed: " + str(processed_output)
+    yield "<<GGWWP>>Output Processed: " + str(processed_output)
         
     logger.info(f">>>>>>> Output Processor agent completed-----------------------------------")
     logger.info(f"Result: {processed_output}")
@@ -227,16 +227,16 @@ async def streamer(request: QueryRequest):
     logger.info(f"Steps: {steps}")
     logger.info(f"Plan: {plan}")  
     
-    response = {
-        "result": processed_output,    
-        "QueryResult": query_result_str,   
-        "steps": convert_to_serializable(steps),
-        "plan": convert_to_serializable(plan)
-    }  
+    # response = {
+    #     "result": processed_output,    
+    #     "QueryResult": query_result_str,   
+    #     "steps": convert_to_serializable(steps),
+    #     "plan": convert_to_serializable(plan)
+    # }  
     
     yield "COMPLETED _ END OF STREAM _ FINAL RESULT"
     
-    yield str(response)
+    # return response
     
 # async def streamer(request: QueryRequest):
     

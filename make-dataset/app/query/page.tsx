@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import useStreamResponse from "./useStreamQuery";
+import { StreamDataProcessor } from "./streamDataProcessor";
 
 const QueryPage = () => {
   const [query, setQuery] = React.useState("");
@@ -45,14 +46,14 @@ const QueryPage = () => {
           <p
             key={index}
             className={`px-4 py-4 rounded-md w-full text-md text-left tracking-wider ${
-              index === responses.length - 1 ? "text-red-950 bg-yellow-300 font-bold" : "bg-slate-50 text-slate-950"
+              index === responses.length - 1 ? "text-red-950 bg-yellow-300 font-bold" : "bg-[#ffffff08] text-white border-[1px] border-[#ffffff25]"
             }`}
           >
-            {/* <StreamDataProcessor text={response} /> */}
-            {response}
+            <StreamDataProcessor text={response} />
+            {/* {response} */}
           </p>
         ))}
-        {isLoading && <p className="text-cyan-400">Loading...</p>}
+        {isLoading && <p className="text-cyan-400">Loading...</p>}        
       </div>      
     </div>
   );

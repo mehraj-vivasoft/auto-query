@@ -5,7 +5,7 @@ function useStreamResponse({
 }: {
   streamCallback: React.Dispatch<React.SetStateAction<string[]>>
 }) {
-  const [responses, setResponses] = useState("")
+  // const [responses, setResponses] = useState("")
   const [data, setData] = useState<any>()
   const [isLoading, setIsLoading] = useState(false)
   async function runQuery(queryContent: string) {
@@ -40,15 +40,23 @@ function useStreamResponse({
       if (text.includes("COMPLETED _ END OF STREAM _ FINAL RESULT")) {
         setData(text.replace(/.*COMPLETED _ END OF STREAM _ FINAL RESULT/, ""))
       } else {
-        setResponses((prev) => prev + text)
-        streamCallback((prevValue) => [...prevValue, text])
+        // the text will start with <<GGWWP>> and if multiple <<GGWWP>> is there, it will be split by <<GGWWP>>
+        // also remove the <<GGWWP>> prefix        
+
+        const responses = text.split("<<GGWWP>>").filter((response) => response !== "")
+        responses.forEach((response) => {
+          streamCallback((prevValue) => [...prevValue, response])
+        })
+
+        // setResponses((prev) => prev + text)
+        // streamCallback((prevValue) => [...prevValue, text])
       }
       read()
     }
     read()
   }
 
-  return { responses, data, runQuery, isLoading }
+  return { data, runQuery, isLoading }
 }
 
 export default useStreamResponse
