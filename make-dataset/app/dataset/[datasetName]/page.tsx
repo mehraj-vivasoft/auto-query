@@ -41,7 +41,7 @@ export default function DisplayJsonlData({
     try {
       setExporting(true);
       const response = await fetch(
-        `/api/export?collectionName=${params.datasetName}`
+        `/api/exportt?collectionName=${params.datasetName}`
       );
       const result = await response.json();
 

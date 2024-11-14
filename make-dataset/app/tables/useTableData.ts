@@ -3,6 +3,7 @@ import { useTableDataContext } from "@/context/TablesContext";
 import { useEffect, useState } from "react";
 import { jsonlFormat, TableSchemaFromDB } from "./models";
 import { TableSchemaAdapter } from "./controllers/tableSchemaAdapter";
+import { AI_BACKEND } from "@/lib/consts";
 
 export const useTableData = () => {
   const { selectedTable, selectedSchema, documents } = useTableDataContext();
@@ -39,7 +40,7 @@ export const useTableData = () => {
   // call to get table schema
   useEffect(() => {
     if (full_table.length > 2) {
-      const backend_url = process.env.BACKEND_URL || "http://localhost:8000";
+      const backend_url = AI_BACKEND || "http://localhost:8000";
       fetch(`${backend_url}/schema`, {
         method: "POST",
         headers: {

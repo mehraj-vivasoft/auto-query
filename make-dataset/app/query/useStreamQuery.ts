@@ -1,3 +1,4 @@
+import { AI_BACKEND } from "@/lib/consts"
 import { useState } from "react"
 
 function useStreamResponse({
@@ -8,8 +9,8 @@ function useStreamResponse({
   // const [responses, setResponses] = useState("")
   const [data, setData] = useState<any>()
   const [isLoading, setIsLoading] = useState(false)
-  async function runQuery(queryContent: string) {
-    const response = await fetch("http://localhost:8000/query/stream", {
+  async function runQuery(queryContent: string) {    
+    const response = await fetch("http://" + AI_BACKEND + "/query/stream", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
