@@ -1,5 +1,7 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 interface Document {
   _id?: string;
@@ -46,8 +48,7 @@ export const TableDataProvider: React.FC<{ children: React.ReactNode }> = ({
           };
           finalData.push(doc);
         });
-        setDocuments(finalData);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setDocuments(finalData);        
       } catch (err: any) {
         setError(err.message || "Failed to fetch documents");
       } finally {

@@ -10,7 +10,7 @@ function useStreamResponse({
   const [data, setData] = useState<any>()
   const [isLoading, setIsLoading] = useState(false)
   async function runQuery(queryContent: string) {    
-    const response = await fetch("http://" + AI_BACKEND + "/query/stream", {
+    const response = await fetch(AI_BACKEND + "/query/stream", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

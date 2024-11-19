@@ -5,9 +5,9 @@ import { ObjectId } from "mongodb";
 export async function POST(req: Request) {
   const { isSuccess, query, comment } = await req.json();
 
-  if (!isSuccess || !query) {
+  if (typeof isSuccess !== "boolean" || !query) {
     return NextResponse.json(
-      { message: "query and isSuccess are required" },
+      { message: "query and isSuccess are required and isSuccess must be a boolean" },
       { status: 400 }
     );
   }

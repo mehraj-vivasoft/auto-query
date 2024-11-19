@@ -4,8 +4,10 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const fileName = searchParams.get("fileName") || "table-metadata";
-  const filePath = path.join(process.cwd(), "exported-datasets", fileName + ".jsonl");
+  // console.log(searchParams);
+  const fileName = searchParams.get("collectionName") || "table-metadata";
+  // const filePath = path.join(process.cwd(), "exported-datasets", fileName + ".jsonl");
+  const filePath = path.join("exported-datasets", fileName + ".jsonl");
 
   let data = [];
 

@@ -33,15 +33,13 @@ export default function DisplayJsonlData({
     };
 
     fetchData();
-  }, [params.datasetName]);
-
-  if (error) return <p>Error: {error}</p>;
+  }, [params.datasetName]);  
 
   async function exportAgain() {
     try {
       setExporting(true);
       const response = await fetch(
-        `/api/exportt?collectionName=${params.datasetName}`
+        `/api/export-dataset?collectionName=${params.datasetName}`
       );
       const result = await response.json();
 
@@ -85,7 +83,7 @@ export default function DisplayJsonlData({
           {exporting ? "Exporting..." : "Re-Export"}
         </button>
       </div>
-      <ul className="grid grid-cols-3 gap-4 text-xs">
+      <ul className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 text-xs">
         {data.map((item, index) => (
           <li
             key={index}
