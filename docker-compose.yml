@@ -1,60 +1,10 @@
 version: '3.8'  # Specify the version of Docker Compose
 
-# services:
-#   huduri:
-#     build:
-#       context: ./huduri
-#       dockerfile: Dockerfile      
-#     container_name: huduri
-#     ports:
-#       - "1433:1433"
-#     environment:
-#       ACCEPT_EULA: "Y"
-#       SA_PASSWORD: "Helloworld1?"
-#       MSSQL_PID: "Developer"
-#     volumes:
-#       - ./huduri/huduri_production20240930.bak:/var/opt/mssql/backup/huduri_production20240930.bak
-#     platform: linux/amd64
-#     networks:
-#       - app-network
-
-#   fastapi:
-#     build:
-#       context: ./fastapi-agent
-#       dockerfile: Dockerfile
-#     container_name: fastapi_server
-#     ports:
-#       - "8000:8000"
-#     env_file: 
-#       - ./fastapi-agent/.env 
-#     platform: linux/amd64
-#     depends_on:
-#       - huduri
-#     networks:
-#       - app-network
-  
-#   make-dataset:
-#     build:
-#       context: ./make-dataset
-#       dockerfile: Dockerfile
-#     container_name: make-dataset
-#     env_file: 
-#       - ./make-dataset/.env
-#     platform: linux/amd64
-#     ports:
-#       - "3000:3000"
-#     depends_on:
-#       - fastapi
-#     networks:
-#       - app-network
-
-# networks:
-#   app-network:
-#     driver: bridge
-
 services:
   huduri:
-    image: 715841331407.dkr.ecr.ap-southeast-1.amazonaws.com/mehraj-auto-query-huduri
+    build:
+      context: ./huduri
+      dockerfile: Dockerfile      
     container_name: huduri
     ports:
       - "1433:1433"
@@ -69,7 +19,9 @@ services:
       - app-network
 
   fastapi:
-    image: 715841331407.dkr.ecr.ap-southeast-1.amazonaws.com/mehraj-auto-query-fastapi
+    build:
+      context: ./fastapi-agent
+      dockerfile: Dockerfile
     container_name: fastapi_server
     ports:
       - "8000:8000"
@@ -82,7 +34,9 @@ services:
       - app-network
   
   make-dataset:
-    image: 715841331407.dkr.ecr.ap-southeast-1.amazonaws.com/mehraj-auto-query-make-dataset:latest
+    build:
+      context: ./make-dataset
+      dockerfile: Dockerfile
     container_name: make-dataset
     env_file: 
       - ./make-dataset/.env

@@ -40,7 +40,7 @@ export const useTableData = () => {
   // call to get table schema
   useEffect(() => {
     if (full_table.length > 2) {
-      const backend_url = AI_BACKEND || "http://localhost:8000";
+      const backend_url = AI_BACKEND || "http://" + window.location.hostname + ":8000" ||  "http://localhost:8000";
       fetch(`${backend_url}/schema`, {
         method: "POST",
         headers: {

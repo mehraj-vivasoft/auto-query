@@ -53,3 +53,5 @@ terraform-ec2/.terraform
 terraform-ec2/.terraform.lock.hcl
 terraform-ec2/terraform.tfstate
 terraform-ec2/terraform.tfstate.backup
+
+docker-compose-all.yml
