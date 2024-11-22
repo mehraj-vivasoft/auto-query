@@ -35,7 +35,8 @@ async def query_fixer(
     => please fix the query and return a query which is correct
      and also reaches the goal.
       One note if the query is about any specific company 
-    first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName = 'name_of_company'
+    first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName LIKE '%name_of_company%'
+    where name_of_company is the name of the company given in the user query for which you want to get the CompanyId for.
     """
 
     get_llm_logger().info("FIXING QUERY USING LLM")

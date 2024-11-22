@@ -42,7 +42,8 @@ def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> Qu
     => please help me with the write the query from the plan.
     make sure the last query is the final query that reaches the goal.
     One note if the query is about any specific company 
-    first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName = 'name_of_company'
+    first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName LIKE '%name_of_company%'
+    where name_of_company is the name of the company given in the user query for which you want to get the CompanyId for.
     """
     
     get_llm_logger().info(f"Generating Steps with query using llm")
