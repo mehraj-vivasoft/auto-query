@@ -43,4 +43,4 @@ def error_processor(query: str, errorMsg: str, sql_query: str) -> str:
 
     get_llm_logger().info(f"Natural Language response from AI : {natural_language_response}")
 
-    return natural_language_response
+    return natural_language_response, completion.usage.total_tokens

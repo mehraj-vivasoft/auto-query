@@ -41,4 +41,4 @@ def relevent_table_selector(query: str, tables: list[str]) -> list[str]:
 
     get_llm_logger().info(f"Selected tables FROM AI : {selectedTables}")
 
-    return selectedTables
+    return selectedTables, completion.usage.total_tokens

@@ -109,12 +109,13 @@ const QueryPage = () => {
           </button>
           <button
             className="bg-slate-950 text-white px-4 py-2 rounded-md"
+            disabled={isLoading}
             onClick={() => {
               console.log(query);
               runQuery(query);
             }}
           >
-            Run Query
+            {isLoading ? "Querying..." : "Run Query"}
           </button>
         </div>
         {showReport && (

@@ -58,4 +58,4 @@ async def query_fixer(
 
     get_llm_logger().info(f"FIXED QUERY FROM AI : {fixed_query}")
 
-    return fixed_query
+    return fixed_query, completion.usage.total_tokens

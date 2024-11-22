@@ -7,8 +7,8 @@ function useStreamResponse({
   streamCallback: React.Dispatch<React.SetStateAction<string[]>>
 }) {
   // const [responses, setResponses] = useState("")
-  const [data, setData] = useState<any>()
-  const [isLoading, setIsLoading] = useState(false)
+  const [data, setData] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
   async function runQuery(queryContent: string) {    
     const response = await fetch(NEXT_PUBLIC_AI_BACKEND + "/query/stream", {
       method: "POST",

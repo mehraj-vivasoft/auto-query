@@ -20,14 +20,14 @@ async def step_executor(query: str, queryList: QuerySteps, planList: PlanList, s
         logger.error(f"Error in executing query : {e}")
         # regenerate the query
         get_app_logger().info(f"Query Execution failed fixing query : {e}")
-        fixed_query = await query_fixer(query, planList, queryList, str(e), selected_tables)
+        fixed_query, fixed_query_tokens = await query_fixer(query, planList, queryList, str(e), selected_tables)
         try:
             logger.info(f"Executing fixed query : {fixed_query}")
             results = execute_query(fixed_query)
             logger.info(f"Query result : {results}")
-            return results
+            return results, fixed_query_tokens
         except Exception as e:
             logger.error(f"Error in executing fixed query : {e}")            
-            return f"Error in executing fixed query : {e}"
+            return f"Error in executing fixed query : {e}", fixed_query_tokens
 
-    return results
+    return results, 0

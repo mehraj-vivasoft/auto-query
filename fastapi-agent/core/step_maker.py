@@ -49,7 +49,7 @@ def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> Qu
     get_llm_logger().info(f"Generating Steps with query using llm")
 
     completion = client.beta.chat.completions.parse(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": """You are a sql query generator.
              Generate SQL query from the plan given by the user.
@@ -69,4 +69,4 @@ def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> Qu
 
     get_llm_logger().info(f"Query Steps FROM AI : {query_steps}")
 
-    return query_steps
+    return query_steps, completion.usage.total_tokens

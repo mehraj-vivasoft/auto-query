@@ -41,4 +41,4 @@ def domain_selector(query: str, domains: list[str]) -> list[str]:
 
     get_llm_logger().info(f"Selected domains FROM AI : {selectedDomains}")
 
-    return selectedDomains
+    return selectedDomains, completion.usage.total_tokens

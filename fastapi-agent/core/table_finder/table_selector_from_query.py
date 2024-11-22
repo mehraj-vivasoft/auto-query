@@ -24,18 +24,20 @@ def table_selector_from_query(query: str):
     domains = get_domains()
     get_db_logger().info("Available domains:", domains)
     
-    selected_domains = domain_selector(query, domains)
+    selected_domains, selected_domains_token = domain_selector(query, domains)
     get_app_logger().info("Selected relevent domains:", selected_domains)
     
     selected_tables = []
+    selected_tables_token = 0
     for domain in selected_domains:        
         prefix = domain + "." if domain != "base" else ""
-        relevent_tables = relevent_table_selector(query, tables = [prefix + table for table in data["tables"][domain]])
+        relevent_tables, token_cnt = relevent_table_selector(query, tables = [prefix + table for table in data["tables"][domain]])
+        selected_tables_token += token_cnt
         selected_tables += relevent_tables    
     
     get_app_logger().info("Selected relevent tables:", selected_tables)
     
-    return selected_tables
+    return selected_tables, selected_tables_token + selected_domains_token
     
 
 # if __name__ == "__main__":

@@ -54,7 +54,7 @@ def bouncer(query: str) -> SafetyCheck:
 
     get_llm_logger().info(f"Query is safe: {isSafe} and reasoning: {reasoning}")    
 
-    return safety_info
+    return safety_info, completion.usage.total_tokens
 
 # if __name__ == "__main__":
 #     query = "I am a supervisor and my employee id is 3. How many employee is under my supervision"
