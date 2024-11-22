@@ -15,6 +15,36 @@ const SamplePage = () => {
   >([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const copyToClipboard = (text: string) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(
+        () => {
+          console.log("Text copied to clipboard successfully!");
+          toast.success("Text copied to clipboard successfully!");
+        },
+        (err) => {
+          console.error("Failed to copy text to clipboard: ", err);
+          toast.error("Failed to copy text to clipboard");
+        }
+      );
+    } else {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        console.log("Text copied to clipboard successfully!");
+        toast.success("Text copied to clipboard successfully!");
+      } catch (err) {
+        console.error("Failed to copy text to clipboard: ", err);
+        toast.error("Failed to copy text to clipboard");
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
   useEffect(() => {
     const fetchQueries = async () => {
       setIsLoading(true);
@@ -42,19 +72,7 @@ const SamplePage = () => {
             <div
               key={index}
               onClick={() => {
-                if (navigator.clipboard) {
-                  navigator.clipboard
-                    .writeText(query?.query || "")
-                    .then(() => {
-                      toast.success("Query copied to clipboard");
-                    })
-                    .catch((err) => {
-                      console.error("Failed to copy: ", err);
-                      toast.error("Failed to copy to clipboard");
-                    });
-                } else {
-                  toast.error("Clipboard API not available");
-                }
+                copyToClipboard(query?.query || "");
               }}
               className={
                 "text-slate-950 px-6 py-4 rounded-md border-[1px] border-[#05081850] max-w-[800px] flex gap-4 justify-between hover:cursor-pointer items-center" +
