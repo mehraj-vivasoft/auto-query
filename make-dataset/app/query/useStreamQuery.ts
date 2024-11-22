@@ -1,4 +1,4 @@
-import { AI_BACKEND } from "@/lib/consts"
+import { NEXT_PUBLIC_AI_BACKEND } from "@/lib/consts"
 import { useState } from "react"
 
 function useStreamResponse({
@@ -10,7 +10,7 @@ function useStreamResponse({
   const [data, setData] = useState<any>()
   const [isLoading, setIsLoading] = useState(false)
   async function runQuery(queryContent: string) {    
-    const response = await fetch(AI_BACKEND + "/query/stream", {
+    const response = await fetch(NEXT_PUBLIC_AI_BACKEND + "/query/stream", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

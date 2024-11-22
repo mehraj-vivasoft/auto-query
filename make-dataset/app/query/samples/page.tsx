@@ -43,11 +43,15 @@ const SamplePage = () => {
               key={index}
               onClick={() => {
                 if (navigator.clipboard) {
-                  navigator.clipboard.writeText(query?.query);
-                  toast.success("Query copied to clipboard");
-                } else if (window?.navigator?.clipboard) {
-                  window.navigator.clipboard.writeText(query?.query);
-                  toast.success("Query copied to clipboard");
+                  navigator.clipboard
+                    .writeText(query?.query || "")
+                    .then(() => {
+                      toast.success("Query copied to clipboard");
+                    })
+                    .catch((err) => {
+                      console.error("Failed to copy: ", err);
+                      toast.error("Failed to copy to clipboard");
+                    });
                 } else {
                   toast.error("Clipboard API not available");
                 }

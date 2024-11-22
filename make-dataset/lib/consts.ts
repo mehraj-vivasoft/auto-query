@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+export const NEXT_PUBLIC_AI_BACKEND = process.env.NEXT_PUBLIC_AI_BACKEND || "http://localhost:8000";
 
-export const AI_BACKEND = process.env.AI_BACKEND || "http://" + window?.location?.hostname + ":8000" || "http://localhost:8000";
-
-console.log('AI_BACKEND:', process.env.AI_BACKEND);
+console.log('NEXT_PUBLIC_AI_BACKEND:', process.env.NEXT_PUBLIC_AI_BACKEND);

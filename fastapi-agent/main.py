@@ -8,6 +8,7 @@ from core.step_executor import step_executor
 from core.query_planner import query_planner, plan_list_to_str
 from core.step_maker import step_maker, steps_to_str
 from core.table_finder.table_selector_from_query import table_selector_from_query
+from core.bouncer import bouncer
 from db.get_schema_list import get_schema_list
 from db.database import (
     connect_db, disconnect_db, execute_query,
@@ -155,7 +156,24 @@ async def streamer(request: QueryRequest):
     logger = get_app_logger()    
     logger.info(f"Received query: {request.query}")    
     
-    yield "<<GGWWP>>QUERY RECEIVED: "
+    yield "<<GGWWP>>QUERY RECEIVED"
+    
+    yield "<<GGWWP>>DOING SAFETY CHECK... "
+    
+    safe_check = bouncer(request.query)
+    
+    if safe_check.isSafe == False:                
+        
+        reason = str(safe_check.reasoningForSafetyOrDanger)
+        
+        yield "<<GGWWP>>QUERY IS NOT SAFE<<GGWWP>>" + reason
+        
+        await asyncio.sleep(5)
+        
+        yield "COMPLETED _ END OF STREAM _ FINAL RESULT"
+        
+        
+        return
     
     yield "<<GGWWP>>CALLING TABLE SELECTOR AGENT"
     
@@ -203,7 +221,11 @@ async def streamer(request: QueryRequest):
         }      
         yield "<<GGWWP>>ERROR REASON: " + str(error_explaination)
         
-        yield "<<GGWWP>>COMPLETED _ END OF STREAM _ FINAL RESULT"
+        yield "COMPLETED _ END OF STREAM _ FINAL RESULT"
+        
+        await asyncio.sleep(3)
+        
+        return
         
         # return str(response)
         

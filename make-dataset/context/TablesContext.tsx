@@ -33,7 +33,7 @@ export const TableDataProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const fetchDocuments = async () => {
       try {        
-        const backend_url = process.env.BACKEND_URL || "http://" + window?.location?.hostname + ":8000" ||  "http://localhost:8000";
+        const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL || "http://" + window?.location?.hostname + ":8000" ||  "http://localhost:8000";
         const response = await fetch(backend_url + "/tables");
         if (!response.ok) {
           throw new Error("Failed to fetch documents");
