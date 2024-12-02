@@ -12,7 +12,7 @@ const QueryPage = () => {
   const [query, setQuery] = React.useState("");
   const [responses, setResponses] = React.useState<string[]>([]);
   const [showReport, setShowReport] = React.useState(false);
-  const { runQuery, isLoading } = useStreamResponse({
+  const { runQuery, isLoading, setIsLoading } = useStreamResponse({
     streamCallback: setResponses,
   });
   const [comment, setComment] = React.useState("");
@@ -29,7 +29,7 @@ const QueryPage = () => {
   >([]);
 
   const { companies, CompanyIsLoading } = useCompanies();
-  const [selectedCompany, setSelectedCompany] = React.useState<string>("0");
+  const [selectedCompany, setSelectedCompany] = React.useState<string>("1");
 
   useEffect(() => {
     const fetchQueries = async () => {
@@ -140,6 +140,7 @@ const QueryPage = () => {
             disabled={isLoading}
             onClick={() => {
               console.log(query);
+              setIsLoading(true);
               runQuery("I am an admin of CompanyId " + selectedCompany + ". " + query);
             }}
           >

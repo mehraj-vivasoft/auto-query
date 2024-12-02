@@ -37,7 +37,7 @@ function useStreamResponse({
         return
       }
 
-      const text = new TextDecoder().decode(value)
+      const text = new TextDecoder("utf-8").decode(value, {stream: true})
       if (text.includes("COMPLETED _ END OF STREAM _ FINAL RESULT")) {
         setData(text.replace(/.*COMPLETED _ END OF STREAM _ FINAL RESULT/, ""))
       } else {
@@ -57,7 +57,7 @@ function useStreamResponse({
     read()
   }
 
-  return { data, runQuery, isLoading }
+  return { data, runQuery, isLoading, setIsLoading }
 }
 
 export default useStreamResponse

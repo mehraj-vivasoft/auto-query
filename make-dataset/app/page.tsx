@@ -10,7 +10,7 @@ export default function Home() {
         className="h-44 mb-6"
       />
 }
-      <div className="text-2xl">Welcome to make dataset platform for PiHR</div>
+      <div className="text-2xl">Welcome to AutoQuery made for PiHR</div>
       <div className="flex gap-4 mt-4 flex-wrap justify-center items-center">
         <Link
           href={"tables"}
