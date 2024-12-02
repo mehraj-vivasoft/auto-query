@@ -1,0 +1,144 @@
+Enums Dropdown description that is used in Database:
+
+Table:
+Attendance.AttendanceBonusPolicy
+Attendance Flag:
+Value    Text
+1 —---> Absent    
+2 —--->Extreme Delay
+3 —---> Delay
+4 —---> Visit 
+5 —---> Present
+6 —--->  Leave
+61 —--->Leave 1st half
+62—---> Leave 2nd half
+9 —---> Hourly Leave
+7 —---> Holiday
+8 —---> Weekend
+
+Table:
+Attendance.AttendancePolicyDetails
+WorkingTypeId:
+Value    Text
+    1        Full Day
+    2        Half Day
+    3        Weekend
+
+
+
+DayId:
+Value    Text
+    1       Saturday
+    2        Sunday
+    3        Monday
+    4        Tuesday
+    5        Wednesday
+    6         Thursday
+    7         Friday
+
+Table:
+Attendance.AttendanceReconciliation
+ApprovalStatus
+Value    Text
+    1       Pending
+    2        Approved
+    3        Rejected
+
+Table:
+Attendance.CompensatedExtraTime
+CompensatedFromId
+Value    Text
+    1        No
+    2        With Salary
+    3        With Leave
+
+Table:
+Attendance.DeletedAttendance
+EmployeeTypeId
+Value    Text
+    0        All
+    1        General
+    2        Roster
+
+Table:
+Attendance.MultipleCheckINOUT
+CHeckingType
+Value    Text
+    1        Check In
+    2        Check Out
+
+Table:
+Attendance.SalaryOrLeaveDeduction
+AbsentOrDelayTypeId
+Value    Text
+    1        Absent
+    2        Delay
+    3       Extreme Delay
+    4       Underwork
+    5       Unpaid Leave
+    6       Early Out
+
+AbsentOrDelayDeductionTypeId
+Value    Text
+    1        Salary
+    2        Leave
+
+Table:
+Attendance.TimeSlotBasedOvertimePolicy
+ApplicableAttendanceFlagIds
+Value    Text
+    1        Weekend
+    2        Holiday
+    3        Full Day Leave
+    4        First Half Leave
+    5        Second Half Leave
+    6        Visit
+    7        Working Day
+    8        Half Working Day
+    9        Absent
+    10      Hourly Leave
+
+Table:
+Attendance.ProcessEligibleEmployee
+EligibleEmployeeOperationTypeId
+Value    Text
+    1        Attendance
+    2        Bonus
+    3        HRD
+    4       Increment
+    5       Leave
+    6        Pay
+    7        PF
+    8        Tax
+
+Table:
+Attendance.ProcessEligibleEmployee
+EligibleEmployeeConditionTypes
+
+Value    Text
+    1        Job Status
+    2        Job Base
+
+Table:
+Attendance.ApprovalWorkFlowMapping
+ApplicationType
+
+Value    Text
+    1        Leave Application
+    2       Visit Application
+    3        Claim
+    4        Advance Salary
+
+Table:
+Leave.Applicationstate
+CurrentApplicationState
+
+Value    Text
+    1        Under Processing
+    2        Approved
+    3        Rejected
+    4        Recommended
+    5       Cancelled
+    6       Reliever Processing
+    7        Modified & Approved
+    8       Modified & Under Processing

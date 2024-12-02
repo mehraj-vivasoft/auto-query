@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from openai import OpenAI
 
 from core.query_planner import PlanList
-from db.database import get_table_names
+from core.enums import get_neccessary_flags
 from db.get_schema_list import get_schema_list
 from utils.logging_config import get_app_logger, get_llm_logger
 
@@ -34,16 +34,17 @@ def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> Qu
     
     get_app_logger().info(f"Getting Schema for tables: {planList.required_table_names}")    
     schemas = get_schema_list(planList.required_table_names)
+    
+    get_app_logger().info(f"Getting Flags for tables: {planList.required_table_names}")
+    flags = get_neccessary_flags(selected_tables)
 
     prompt = f"""I have a sql db with the following relevent tables: {tables}
     => My goal is to do the following query: {query}
     => And Here are the required schemas of the tables: {schemas}
+    => And Here are the required enums and flags of the relevent tables: {flags}
     => I also have the following plan: {planList.plans}    
     => please help me with the write the query from the plan.
-    make sure the last query is the final query that reaches the goal.
-    One note if the query is about any specific company 
-    first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName LIKE '%name_of_company%'
-    where name_of_company is the name of the company given in the user query for which you want to get the CompanyId for.
+    make sure the last query is the final query that reaches the goal.    
     """
     
     get_llm_logger().info(f"Generating Steps with query using llm")

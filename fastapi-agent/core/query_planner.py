@@ -28,15 +28,17 @@ def plan_list_to_str(plans: list[Plan]) -> str:
     print(plans)    
     return "\n".join([_plan_to_str(plan) for plan in plans])
 
-def query_planner(query: str, selected_tables: list[str]) -> PlanList:
+def query_planner(query: str, selected_tables: list[str]) -> PlanList:        
 
     prompt = f"""I have a sql db with the following tables: {selected_tables}
     I want to do the following query: {query}
     please help me with the plan for the query and also tell me how to use 
-    tables that are needed or releted for the query. One note if the query is about any specific company 
-    first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName LIKE '%name_of_company%'
-    where name_of_company is the name of the company given in the user query for which you want to get the CompanyId for.
+    tables that are needed or releted for the query.
     """
+    
+    # One note if the query is about any specific company 
+    # first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName LIKE '%name_of_company%'
+    # where name_of_company is the name of the company given in the user query for which you want to get the CompanyId for.
     
     get_llm_logger().info(f"Planning the query using llm")
 

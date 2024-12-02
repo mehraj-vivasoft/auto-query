@@ -5,6 +5,8 @@ import { StreamDataProcessor } from "./streamDataProcessor";
 import { FaRandom } from "react-icons/fa";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { FaPlay } from "react-icons/fa";
+import useCompanies from "./useComapnies";
 
 const QueryPage = () => {
   const [query, setQuery] = React.useState("");
@@ -25,6 +27,9 @@ const QueryPage = () => {
       id: string;
     }[]
   >([]);
+
+  const { companies, CompanyIsLoading } = useCompanies();
+  const [selectedCompany, setSelectedCompany] = React.useState<string>("0");
 
   useEffect(() => {
     const fetchQueries = async () => {
@@ -85,9 +90,32 @@ const QueryPage = () => {
             setQuery(e.target.value);
           }}
         />
-        <div className="w-full flex items-center gap-3 justify-end -mt-3">
+        <div className="-mt-2 flex items-center justify-center">
+          {CompanyIsLoading ? (
+            <div className="w-full p-2 border border-slate-950 rounded-md text-center bg-transparent">
+              Loading...
+            </div>
+          ) : (
+            <select
+              className="w-full p-2 border border-slate-950 rounded-md text-center bg-transparent"
+              name="companies"
+              id="companies"
+              value={selectedCompany}
+              onChange={(e) => {
+                setSelectedCompany(e.target.value);
+              }}
+            >
+              {companies.map((company) => (
+                <option key={company.id} value={company.id}>
+                  {company.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+        <div className="w-full flex items-center gap-3 justify-center flex-wrap tracking-wider">
           <button
-            className="bg-slate-950 text-white px-4 py-2 rounded-md"
+            className="bg-slate-950 text-white px-4 py-2 rounded-lg hover:text-slate-950 hover:bg-white border-2 hover:border-slate-950"
             onClick={() => {
               setShowReport(!showReport);
             }}
@@ -95,7 +123,7 @@ const QueryPage = () => {
             Report
           </button>
           <button
-            className="bg-slate-950 text-white px-4 py-2 rounded-md flex items-center gap-2"
+            className="bg-slate-950 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:text-slate-950 hover:bg-white border-2 hover:border-slate-950"
             disabled={randomLoading}
             onClick={() => {
               setQuery(
@@ -105,17 +133,18 @@ const QueryPage = () => {
             }}
           >
             <FaRandom />
-            {randomLoading ? "Loading..." : "Random Query"}
+            {randomLoading ? "Loading..." : "Random"}
           </button>
           <button
-            className="bg-slate-950 text-white px-4 py-2 rounded-md"
+            className="bg-slate-950 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:text-slate-950 hover:bg-white border-2 hover:border-slate-950"
             disabled={isLoading}
             onClick={() => {
               console.log(query);
-              runQuery(query);
+              runQuery("I am an admin of CompanyId " + selectedCompany + ". " + query);
             }}
           >
-            {isLoading ? "Querying..." : "Run Query"}
+            <FaPlay />
+            {isLoading ? "Querying..." : "Run"}
           </button>
         </div>
         {showReport && (

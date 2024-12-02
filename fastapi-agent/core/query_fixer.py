@@ -7,6 +7,7 @@ from core.query_planner import PlanList
 from core.step_maker import QuerySteps
 from db.get_schema_list import get_schema_list
 from utils.logging_config import get_llm_logger
+from core.enums import get_neccessary_flags
 
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -23,12 +24,14 @@ async def query_fixer(
 
     tables = selected_tables
     schemas = get_schema_list(planList.required_table_names)
+    flags = get_neccessary_flags(selected_tables)
 
     # => I did followed the following steps to do the query: {queryList}    
 
     prompt = f"""I have a sql db with the following tables: {tables}
     => My goal is to do the following query: {query}
     => And Here are the required schemas of the tables: {schemas}
+    => And Here are the required enums and flags of the relevent tables: {flags}
     => I did the following query:
      {queryList.steps[-1].sql_query}
     => But, I got this error while running the final query: {error_message}

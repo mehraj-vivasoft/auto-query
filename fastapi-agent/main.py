@@ -66,10 +66,9 @@ def tables():
 
 
 @app.post("/schema")
-def schema(request: SchemaRequest):
+def schema(request: SchemaRequest): 
     tables = request.table_names
     return {"schema": get_schema_list(tables)}
-
 
 @app.get("/")
 def read_root():
@@ -86,6 +85,13 @@ def convert_to_serializable(obj):
     else:
         return obj
 
+@app.get("/companies")
+def companies():
+    results = execute_query("SELECT CompanyId, CompanyName FROM Security.AppClientCompany;")
+    formatted_results = [{"id": id, "name": name} for id, name in results]
+    results = formatted_results
+    print(results)
+    return convert_to_serializable(results)
 
 @app.post("/query")
 async def query_in_natural_language(request: QueryRequest):
