@@ -1,28 +1,44 @@
 from contextlib import contextmanager
+import os
 from typing import Any, Dict, List
 from sqlalchemy import create_engine, MetaData, inspect, text
 from db_factory.db_interface import DatabaseInterface
 from sqlalchemy.orm import sessionmaker
-from utils.logging_config import get_db_logger
+from utils.logging_config import get_app_logger, get_db_logger
 from db.schema_helpers import get_column_details, get_foreign_key_details, get_index_details, get_primary_key_details
 
 class MSSQLDatabaseInistance(DatabaseInterface):
-    def __init__(self, connection_string: str):
-        self.connection_string = connection_string
+    def __init__(self):
+        self.connection_string = self.get_connection_string()
         self.engine = None
         self.logger = get_db_logger()
         self.SessionLocal = None
     
-    def connect(self) -> None:
+    def get_connection_string(self) -> str:
+        """Get connection string from environment variables"""
+        USER = os.getenv("DB_USER", "SA")
+        PASSWORD = os.getenv("DB_PASSWORD", "Helloworld1?")
+        DB_HOST = os.getenv("DB_HOST", "localhost")
+        DB_PORT = os.getenv("DB_PORT", "1433")
+        DB_NAME = os.getenv("DB_NAME", "huduri_production20240930")
+        
+        connection_string = f"mssql+pyodbc://{USER}:{PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?driver=ODBC+Driver+17+for+SQL+Server"
+        get_app_logger().info(f"Connection string from env: {connection_string}")
+        
+        return connection_string
+    
+    async def connect(self) -> None:
         try:
             self.engine = create_engine(self.connection_string, echo=True)
             self.SessionLocal = sessionmaker(bind=self.engine)                  
             self.logger.info(f"Connected to database: {self.connection_string}")
+            print("Connected to database")
         except Exception as e:
             self.logger.error(f"Failed to connect to database: {str(e)}")
+            print("Failed to connect to database")
             raise
     
-    def disconnect(self) -> None:
+    async def disconnect(self) -> None:
         if self.engine:
             self.engine.dispose()
             self.logger.info("Database disconnected")
@@ -119,8 +135,8 @@ class MSSQLDatabaseInistance(DatabaseInterface):
     
     
 # Usage example:
-# def create_db_client(connection_string: str) -> MSSQLDatabaseInistance:
-#     db = MSSQLDatabaseInistance(connection_string)
+# def create_db_client() -> MSSQLDatabaseInistance:
+#     db = MSSQLDatabaseInistance()
 #     db.connect()
 #     return db
 

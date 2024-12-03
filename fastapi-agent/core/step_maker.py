@@ -7,6 +7,7 @@ from core.query_planner import PlanList
 from core.enums import get_neccessary_flags
 from db.get_schema_list import get_schema_list
 from utils.logging_config import get_app_logger, get_llm_logger
+from db_factory.db_interface import DatabaseInterface
 
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -28,12 +29,12 @@ def steps_to_str(steps: list[QueryStep]) -> str:
     return "\n".join([_step_to_str(step) for step in steps])
 
 
-def step_maker(query: str, planList: PlanList, selected_tables: list[str]) -> QuerySteps:
+def step_maker(query: str, planList: PlanList, selected_tables: list[str], db_instance: DatabaseInterface) -> QuerySteps:
 
     tables = selected_tables
     
     get_app_logger().info(f"Getting Schema for tables: {planList.required_table_names}")    
-    schemas = get_schema_list(planList.required_table_names)
+    schemas = db_instance.get_schema_list(planList.required_table_names)
     
     get_app_logger().info(f"Getting Flags for tables: {planList.required_table_names}")
     flags = get_neccessary_flags(selected_tables)
