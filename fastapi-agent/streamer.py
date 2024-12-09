@@ -117,8 +117,14 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
     
     logger.info(f"Calling Output Processor agent")
     
+    # if queary_result is more than 5000 make it 5000
+    trimmed_query_result = query_result
+    
+    if len(query_result) > 5000:
+        trimmed_query_result = query_result[:5000]
+    
     # results -> llm response
-    processed_output, processed_output_token = output_processor(request.query, query_result)  
+    processed_output, processed_output_token = output_processor(request.query, trimmed_query_result)  
     
     total_tokens += processed_output_token
     

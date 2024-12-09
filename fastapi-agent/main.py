@@ -155,4 +155,4 @@ async def query_in_natural_language(request: QueryRequest):
 async def stream_query_in_natural_language(request: QueryRequest):        
     
     # return query_result
-    return StreamingResponse(streamer(request, db_instance))
+    return StreamingResponse(streamer(request, db_instance), media_type="text/event-stream")

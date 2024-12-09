@@ -28,11 +28,11 @@ def relevent_table_selector(query: str, tables: list[str]) -> list[str]:
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": """You are a sql table selctor for making sql queries.
+            {"role": "system", "content": """You are a sql table selector for making sql queries.
              You will be given a natural language query and a list of tables
-             You need to choose releted tables .So, you will return the releted
+             You need to choose releted tables. So, you will return the related
              table list in the given response_format."""},
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": prompt},            
         ],
         response_format=SelectedTableResponseFormat,
     )

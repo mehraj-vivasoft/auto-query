@@ -36,6 +36,12 @@ export default function Home() {
         >
           Samples
         </Link>
+        <Link
+          href={"chat"}
+          className="mt-2 px-6 bg-slate-950 text-white rounded-md py-2 text-xl"
+        >
+          Chat
+        </Link>
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ def plan_list_to_str(plans: list[Plan]) -> str:
 
 def query_planner(query: str, selected_tables: list[str]) -> PlanList:        
 
-    prompt = f"""I have a sql db with the following tables: {selected_tables}
+    prompt = f"""I have a sql db with the following relevent tables: {selected_tables}
     I want to do the following query: {query}
     please help me with the plan for the query and also tell me how to use 
     tables that are needed or releted for the query.
@@ -46,10 +46,11 @@ def query_planner(query: str, selected_tables: list[str]) -> PlanList:
         model="gpt-4o",
         messages=[
             {"role": "system", "content": """You are a sql query planner.
-            Guide the user through plan given query. You have to provide a
-            plan description and the outcome of the plan. So you will return
+            Guide the user by generating a plan for the given query. You will return
             an array of plans with required table names which contains
-            the plan description and outcome in the given response_format."""},
+            the plan description and outcome in the given response_format. 
+            For each plan, You have to provide a plan description 
+            and the outcome of the plan."""},
             {"role": "user", "content": prompt}
         ],
         response_format=PlanList,
