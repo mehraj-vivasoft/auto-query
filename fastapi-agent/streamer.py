@@ -6,6 +6,9 @@ from core.query_planner import query_planner
 from core.step_maker import step_maker
 from core.table_finder.table_selector_from_query import table_selector_from_query
 from core.bouncer import bouncer
+from core.table_column_name_finder import table_column_name_finder
+from core.graph_maker.bar_chart_maker import bar_chart_maker
+from core.graph_maker.chart_maker import chart_maker
 from utils.logging_config import get_app_logger
 from pydantic import BaseModel
 import asyncio
@@ -22,9 +25,9 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
     logger = get_app_logger()    
     logger.info(f"Received query: {request.query}")    
     
-    yield "<<GGWWP>>QUERY RECEIVED"
+    yield "<<GGWWP>>$QUERY RECEIVED"
     
-    yield "<<GGWWP>>DOING SAFETY CHECK... "
+    yield "<<GGWWP>>$DOING SAFETY CHECK... "
     
     safe_check, safe_check_tokens = bouncer(request.query)
     total_tokens += safe_check_tokens
@@ -33,9 +36,9 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
         
         reason = str(safe_check.reasoningForSafetyOrDanger)
         
-        yield "<<GGWWP>>QUERY IS NOT SAFE<<GGWWP>>" + reason
+        yield "<<GGWWP>>$QUERY IS NOT SAFE<<GGWWP>>$" + reason
         
-        yield "<<GGWWP>>TOTAL TOKENS USED: " + str(total_tokens)
+        yield "<<GGWWP>>$TOTAL TOKENS USED: " + str(total_tokens)
         
         await asyncio.sleep(2)        
         
@@ -44,28 +47,28 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
         
         return
     
-    yield "<<GGWWP>>CALLING TABLE SELECTOR AGENT"
+    yield "<<GGWWP>>$CALLING TABLE SELECTOR AGENT"
     
     # table selector: query -> tables
     selected_tables, selected_tables_token = table_selector_from_query(request.query)
     
     total_tokens += selected_tables_token
             
-    yield "<<GGWWP>>Selected Tables are: " + str(selected_tables)
+    yield "<<GGWWP>>$Selected Tables are: " + str(selected_tables)
     
     logger.info(f"Calling Query Planner agent")
     
-    yield "<<GGWWP>>CALLING QUERY PLANNER AGENT"
+    yield "<<GGWWP>>$CALLING QUERY PLANNER AGENT"
     
     # planner: query -> plan
     plan, plan_token = query_planner(request.query, selected_tables)
     
     total_tokens += plan_token
         
-    yield "<<GGWWP>>Created Plan is : " + str(plan.model_dump_json())
+    yield "<<GGWWP>>$Created Plan is : " + str(plan.model_dump_json())
     
     
-    yield "<<GGWWP>>CALLING STEP MAKER AGENT"
+    yield "<<GGWWP>>$CALLING STEP MAKER AGENT"
     logger.info(f"Calling Step Maker agent")
     
     # step maker: plan -> steps
@@ -73,9 +76,9 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
     
     total_tokens += steps_token
     
-    yield "<<GGWWP>>Created Steps are : " + str(steps.model_dump_json())
+    yield "<<GGWWP>>$Created Steps are : " + str(steps.model_dump_json())
     
-    yield "<<GGWWP>>CALLING STEP EXECUTOR AGENT"
+    yield "<<GGWWP>>$CALLING STEP EXECUTOR AGENT"
     
     logger.info(f"Calling Step Executor agent")
     
@@ -87,7 +90,7 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
     query_result_str = str(query_result)
     if query_result_str.startswith("Error"):
         logger.error(f"Error in query execution: {query_result}")
-        yield "<<GGWWP>>ERROR IN QUERY EXECUTION - CALLING ERROR PROCESSOR AGENT"
+        yield "<<GGWWP>>$ERROR IN QUERY EXECUTION - CALLING ERROR PROCESSOR AGENT"
         error_explaination, error_processor_token = error_processor(request.query, query_result_str, steps.steps[len(steps.steps) - 1].sql_query)        
         total_tokens += error_processor_token
         # response = {
@@ -96,9 +99,9 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
         #     "steps": convert_to_serializable(steps),
         #     "plan": convert_to_serializable(plan)
         # }      
-        yield "<<GGWWP>>ERROR REASON: " + str(error_explaination)
+        yield "<<GGWWP>>$ERROR REASON: " + str(error_explaination)
         
-        yield "<<GGWWP>>TOTAL TOKENS USED: " + str(total_tokens)
+        yield "<<GGWWP>>$TOTAL TOKENS USED: " + str(total_tokens)
         
         await asyncio.sleep(3)
         
@@ -109,26 +112,60 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
         # return str(response)
         
     
-    yield "<<GGWWP>>QUERY EXECUTED SUCCESSFULLY"
+    yield "<<GGWWP>>$QUERY EXECUTED SUCCESSFULLY"
     
-    yield "<<GGWWP>>Query Result: " + str(query_result)
+    column_names, column_names_token = await table_column_name_finder(request.query, steps)   
+    print(column_names) 
+    total_tokens += column_names_token
     
-    yield "<<GGWWP>>CALLING OUTPUT PROCESSOR AGENT"
+    # column_names_str = str(column_names)[:-1]
+    # column_names_str = column_names_str[:1] + "(" + column_names_str[1:] + ")"
     
-    logger.info(f"Calling Output Processor agent")
+    # processed_query_result = column_names_str + str(query_result)
+    
+    # Combine column names and query result into a formatted string
+    # The result will be in the format: [(column1, column2, ...), (row1_data), (row2_data), ...]
+    processed_query_result = f"[({', '.join(column_names)}),{str(query_result)[1:]}"
     
     # if queary_result is more than 5000 make it 5000
     trimmed_query_result = query_result
     
     if len(query_result) > 5000:
-        trimmed_query_result = query_result[:5000]
+        # Trim the query result to 5000 characters if it's longer than 5000
+        trimmed_query_result = query_result[:5000] if len(query_result) > 5000 else query_result
+    
+    yield "<<GGWWP>>$Query Result: " + processed_query_result
+    
+    yield "<<GGWWP>>$ANALYZING IF CHART CAN BE MADE"
+    
+    chart_config, chart_config_token = await chart_maker(request.query, steps.steps[len(steps.steps) - 1].sql_query, str(trimmed_query_result))
+    
+    total_tokens += chart_config_token
+    
+    if chart_config.isBarChartPossible:        
+        yield "<<GGWWP>>$CALLING BAR CHART MAKER AGENT"
+        
+        logger.info(f"Calling Bar Chart Maker agent")
+        
+        # bar chart: query result -> bar chart        
+        
+        bar_chart, bar_chart_token = await bar_chart_maker(request.query, str(trimmed_query_result))
+        total_tokens += bar_chart_token
+        
+        # print("bar chart: ",bar_chart)
+        
+        yield "<<GGWWP>>$Bar Chart is: " + bar_chart    
+    
+    yield "<<GGWWP>>$CALLING OUTPUT PROCESSOR AGENT"
+    
+    logger.info(f"Calling Output Processor agent")    
     
     # results -> llm response
-    processed_output, processed_output_token = output_processor(request.query, trimmed_query_result)  
+    processed_output, processed_output_token = output_processor(request.query, trimmed_query_result)
     
     total_tokens += processed_output_token
     
-    yield "<<GGWWP>>Output Processed: " + str(processed_output)
+    yield "<<GGWWP>>$Output Processed: " + str(processed_output)
         
     logger.info(f">>>>>>> Output Processor agent completed-----------------------------------")
     logger.info(f"Result: {processed_output}")
@@ -143,7 +180,7 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
     #     "plan": convert_to_serializable(plan)
     # }  
     
-    yield "<<GGWWP>>TOTAL TOKENS USED: " + str(total_tokens)
+    yield "<<GGWWP>>$TOTAL TOKENS USED: " + str(total_tokens)
     
     await asyncio.sleep(3)
     

@@ -58,9 +58,10 @@ app.add_middleware(
 # --------------------------------  ROUTES  -------------------------------- #
 
 @app.post("/items/")
-def read_items(query: ManualQuery):
-    results = db_instance.execute_query(query)
-    return results
+def read_items(req: ManualQuery):    
+    print(req.query)
+    results = db_instance.execute_query(req.query)
+    return str(results)
 
 @app.get("/tables/")
 def tables():
@@ -85,7 +86,7 @@ def convert_to_serializable(obj):
         return convert_to_serializable(vars(obj))
     else:
         return obj
-
+    
 @app.get("/companies")
 def companies():
     results = db_instance.execute_query("SELECT CompanyId, CompanyName FROM Security.AppClientCompany;")

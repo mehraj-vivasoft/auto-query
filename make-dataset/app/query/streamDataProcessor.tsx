@@ -6,6 +6,8 @@ import { PiFileSqlBold } from "react-icons/pi";
 import { FaFlagCheckered } from "react-icons/fa";
 import { BsDatabaseFillCheck } from "react-icons/bs";
 import { FaHandPointRight } from "react-icons/fa";
+import SQLResultTable from "../components/SQLResultTable";
+import { BarChartBasic } from "../test/BarChart";
 
 function parseStringToArray(input: string): string[] {
   // Remove the square brackets and split by comma
@@ -36,6 +38,34 @@ interface Steps {
   steps: Step[];
 }
 
+interface BarRaw {
+  bars: {
+    keyName: string;
+    value: number;
+  }[];
+  key_title: string;
+  value_title: string;
+  bar_chart_title: string;
+  bar_chart_description: string;
+}
+
+function transformChartData(input: BarRaw) {
+  // Dynamically map key and value titles
+  const keyTitle = input.key_title.replace(/\s+/g, ""); // Remove spaces
+  const valueTitle = input.value_title.replace(/\s+/g, ""); // Remove spaces
+
+  return {
+    chartData: input.bars
+      .filter((item) => item.value > 0) // Exclude entries with value 0
+      .map((item) => ({
+        [keyTitle]: item.keyName, // Use dynamic key for EmployeeName
+        [valueTitle]: item.value, // Use dynamic key for TotalLeaveDays
+      })),
+    title: input.bar_chart_title,
+    subtitle: input.bar_chart_description,
+  };
+}
+
 const StreamCard: React.FC<{ foundState: string; content: string }> = ({
   foundState,
   content,
@@ -54,6 +84,8 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
 
   const plansObj = foundState === "PLAN" ? (dataObject as Plans) : null;
   const stepsObj = foundState === "STEPS" ? (dataObject as Steps) : null;
+  const barChartObj = foundState === "BAR" ? (dataObject as BarRaw) : null;
+  const transformedData = barChartObj ? transformChartData(barChartObj) : null;
 
   return (
     <div className="flex flex-col gap-2 w-full items-center justify-center">
@@ -144,6 +176,7 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
             </div>
             <span>{content}</span>
           </div>
+          <SQLResultTable resultString={content} />
         </>
       ) : foundState === "OUTPUT" ? (
         <>
@@ -155,6 +188,21 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
             </div>
             <span>{content}</span>
           </div>
+        </>
+      ) : foundState === "BAR" ? (
+        <>
+          <h1 className="tracking-widest">BAR CREATION COMPLETED</h1>
+          {barChartObj && transformedData ? (
+            <div className="">
+              <BarChartBasic
+                chartData={transformedData.chartData}
+                title={transformedData.title}
+                subtitle={transformedData.subtitle}
+              />
+            </div>
+          ) : (
+            <p>{content}</p>
+          )}
         </>
       ) : (
         <div className="text-center">{content}</div>
@@ -174,6 +222,8 @@ export const StreamDataProcessor = ({ text }: { text: string }) => {
     ? "QUERY"
     : text.startsWith("Output Processed:")
     ? "OUTPUT"
+    : text.startsWith("Bar Chart is:")
+    ? "BAR"
     : "UNKNOWN";
 
   if (foundState === "TABLES") {
@@ -199,6 +249,11 @@ export const StreamDataProcessor = ({ text }: { text: string }) => {
   if (foundState === "OUTPUT") {
     const output = text.replace("Output Processed:", "");
     return <StreamCard foundState={foundState} content={output} />;
+  }
+
+  if (foundState === "BAR") {
+    const bar = text.replace("Bar Chart is:", "");
+    return <StreamCard foundState={foundState} content={bar} />;
   }
 
   return <StreamCard foundState={foundState} content={text} />;
