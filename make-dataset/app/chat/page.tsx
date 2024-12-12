@@ -1,60 +1,95 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { HiMenuAlt2 } from 'react-icons/hi';
-import { IoMdClose } from 'react-icons/io';
-import ChatThread from './components/ChatThread';
-import Sidebar from './components/Sidebar';
-import { ChatThread as ChatThreadType, Message } from './types';
+import React, { useState, useEffect } from "react";
+import { HiMenuAlt2 } from "react-icons/hi";
+import { IoMdClose } from "react-icons/io";
+import ChatThread from "./components/ChatThread";
+import Sidebar from "./components/Sidebar";
+import { ChatThread as ChatThreadType, Message } from "./types";
+import useCompanies from "../query/useComapnies";
+import useStreamResponseForChat from "./useStreamQueryForChat";
 
 export default function ChatPage() {
   const [threads, setThreads] = useState<ChatThreadType[]>([
-    { id: 1, title: 'New Chat 1', messages: [] },
+    { id: 1, title: "New Chat 1", messages: [] },
   ]);
   const [activeThreadId, setActiveThreadId] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { companies, CompanyIsLoading } = useCompanies();
+  const [responses, setResponses] = useState<string[]>([]);
+  const { runQuery, isLoading, setIsLoading } = useStreamResponseForChat({
+    streamCallback: setResponses,
+  });
 
   const activeThread = threads.find((thread) => thread.id === activeThreadId)!;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const sidebar = document.getElementById('sidebar');
-      const toggleButton = document.getElementById('sidebarToggle');
-      
-      if (sidebar && toggleButton && 
-          !sidebar.contains(event.target as Node) && 
-          !toggleButton.contains(event.target as Node)) {
+      const sidebar = document.getElementById("sidebar");
+      const toggleButton = document.getElementById("sidebarToggle");
+
+      if (
+        sidebar &&
+        toggleButton &&
+        !sidebar.contains(event.target as Node) &&
+        !toggleButton.contains(event.target as Node)
+      ) {
         setIsSidebarOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSendMessage = (text: string) => {
-    const newUserMessage: Message = {
+  useEffect(() => {
+    console.log("responses", responses);
+    const formattedResponse: Message[] = responses.map((response) => ({
       id: Date.now(),
-      text,
-      sender: 'user',
-    };
-
-    const newAIMessage: Message = {
-      id: Date.now() + 1,
-      text: `AI response to: ${text}`,
-      sender: 'ai',
-    };
-
-    const updatedThreads = threads.map((thread) =>
-      thread.id === activeThreadId
-        ? {
-            ...thread,
-            messages: [...thread.messages, newUserMessage, newAIMessage],
-          }
-        : thread
+      text: response.replace("<<GGNOTAI>>", ""),
+      sender: response.includes("<<GGNOTAI>>") ? "user" : "ai",
+    }));
+    setThreads((prevThreads) =>
+      prevThreads.map((thread) =>
+        thread.id === activeThreadId
+          ? {
+              ...thread,
+              messages: formattedResponse,
+            }
+          : thread
+      )
     );
+  }, [responses]);
 
-    setThreads(updatedThreads);
+  const handleSendMessage = async (text: string, company: string) => {
+    // const newUserMessage: Message = {
+    //   id: Date.now(),
+    //   text,
+    //   sender: "user",
+    // };
+
+    // const newAIMessage: Message = {
+    //   id: Date.now() + 1,
+    //   text: `AI response to: ${text}`,
+    //   sender: "ai",
+    // };
+
+    // const updatedThreads = threads.map((thread) =>
+    //   thread.id === activeThreadId
+    //     ? {
+    //         ...thread,
+    //         messages: [...thread.messages, newUserMessage],
+    //       }
+    //     : thread
+    // );
+
+    // setThreads(updatedThreads);
+
+    setResponses([...responses, "<<GGNOTAI>>" + text]);
+    setTimeout(() => {
+      setIsLoading(true);
+      runQuery("I am an admin of CompanyId " + company + ". " + text);
+    }, 1000);
   };
 
   const handleCreateThread = () => {
@@ -81,9 +116,7 @@ export default function ChatPage() {
 
   const handleUpdateThreadTitle = (threadId: number, newTitle: string) => {
     const updatedThreads = threads.map((thread) =>
-      thread.id === threadId
-        ? { ...thread, title: newTitle }
-        : thread
+      thread.id === threadId ? { ...thread, title: newTitle } : thread
     );
 
     setThreads(updatedThreads);
@@ -115,6 +148,8 @@ export default function ChatPage() {
       />
 
       <ChatThread
+        companies={companies}
+        CompanyIsLoading={CompanyIsLoading}
         messages={activeThread.messages}
         onSendMessage={handleSendMessage}
       />

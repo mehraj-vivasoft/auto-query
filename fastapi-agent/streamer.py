@@ -101,6 +101,10 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
         # }      
         yield "<<GGWWP>>$ERROR REASON: " + str(error_explaination)
         
+        usd_bill = total_tokens * 0.004 / 1000
+        bdt_bill = usd_bill * 120
+        yield "<<GGWWP>>$TOTAL BILL: USD " + str(usd_bill) + " BDT " + str(bdt_bill)    
+        
         yield "<<GGWWP>>$TOTAL TOKENS USED: " + str(total_tokens)
         
         await asyncio.sleep(3)
@@ -179,6 +183,10 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
     #     "steps": convert_to_serializable(steps),
     #     "plan": convert_to_serializable(plan)
     # }  
+    
+    usd_bill = total_tokens * 0.004 / 1000
+    bdt_bill = usd_bill * 120
+    yield "<<GGWWP>>$TOTAL BILL: USD " + str(usd_bill) + " BDT " + str(bdt_bill)    
     
     yield "<<GGWWP>>$TOTAL TOKENS USED: " + str(total_tokens)
     

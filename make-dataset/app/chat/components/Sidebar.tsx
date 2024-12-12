@@ -49,7 +49,7 @@ export default function Sidebar({
       id="sidebar"
       className={`${
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0 fixed md:relative w-64 h-full bg-[#071e35] text-white p-4 flex flex-col transition-transform duration-300 ease-in-out z-40`}
+      } md:translate-x-0 fixed md:relative min-w-fit w-64 h-full bg-[#071e35] text-white p-4 flex flex-col transition-transform duration-300 ease-in-out z-40`}
     >
       <div className="mb-6 flex justify-center">
         <Link href="/">
