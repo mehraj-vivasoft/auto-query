@@ -42,8 +42,9 @@ async def lifespan(app: FastAPI):
     db_instance = MSSQLDatabaseInistance()
     # db_instance = SQLiteDatabaseInstance()
     await db_instance.connect()
-    logger = get_app_logger()
+    logger = get_app_logger()    
     logger.info("Application started")
+    print("Application started")
     yield
     await db_instance.disconnect()
     logger.info("Application stopped")
