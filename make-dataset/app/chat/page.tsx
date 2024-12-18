@@ -89,6 +89,7 @@ export default function ChatPage() {
     setTimeout(() => {
       setIsLoading(true);
       runQuery("I am an admin of CompanyId " + company + ". " + text);
+      // runQuery(text);
     }, 1000);
   };
 

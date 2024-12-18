@@ -19,6 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from streamer import streamer
 from db_factory.db_providers.mssql import MSSQLDatabaseInistance
+from db_factory.db_providers.sqlite import SQLiteDatabaseInstance
 
 class QueryRequest(BaseModel):
     query: str
@@ -39,6 +40,7 @@ async def lifespan(app: FastAPI):
     setup_logging()
     global db_instance
     db_instance = MSSQLDatabaseInistance()
+    # db_instance = SQLiteDatabaseInstance()
     await db_instance.connect()
     logger = get_app_logger()
     logger.info("Application started")
