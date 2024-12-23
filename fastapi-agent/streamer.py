@@ -184,7 +184,7 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
     #     "plan": convert_to_serializable(plan)
     # }  
     
-    usd_bill = total_tokens * 0.004 / 1000
+    usd_bill = total_tokens * 0.0003 / 1000
     bdt_bill = usd_bill * 120
     yield "<<GGWWP>>$TOTAL BILL: USD " + str(usd_bill) + " BDT " + str(bdt_bill)    
     

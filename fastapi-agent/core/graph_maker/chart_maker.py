@@ -30,7 +30,7 @@ async def chart_maker(query: str, sql_query: str, output: str) -> ChartConfig:
     # get_llm_logger().info(f"Processing output of the query")
 
     completion = client.beta.chat.completions.parse(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": """You are a dicision agent which can decide which type of graph can be made
              from a given query and output. I will provide you a natural language query, a sql query and the response snapshot 

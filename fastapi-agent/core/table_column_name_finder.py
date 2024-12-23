@@ -29,7 +29,7 @@ async def table_column_name_finder(query: str, queryList: QuerySteps):
     get_llm_logger().info("GETTING COLUMN NAMES USING LLM")
 
     completion = client.beta.chat.completions.parse(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": """You are a sql query column name finder.
              You will be given a natural language query, a sql query for that. 

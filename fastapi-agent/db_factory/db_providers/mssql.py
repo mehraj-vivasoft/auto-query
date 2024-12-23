@@ -23,6 +23,7 @@ class MSSQLDatabaseInistance(DatabaseInterface):
         DB_NAME = os.getenv("DB_NAME", "huduri_production20240930")
         
         connection_string = f"mssql+pyodbc://{USER}:{PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?driver=ODBC+Driver+17+for+SQL+Server"
+        print(connection_string)
         get_app_logger().info(f"Connection string from env: {connection_string}")
         
         return connection_string

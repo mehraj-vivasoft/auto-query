@@ -43,7 +43,7 @@ def query_planner(query: str, selected_tables: list[str]) -> PlanList:
     get_llm_logger().info(f"Planning the query using llm")
 
     completion = client.beta.chat.completions.parse(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": """You are a sql query planner.
             Guide the user by generating a plan for the given query. You will return

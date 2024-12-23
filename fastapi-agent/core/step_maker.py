@@ -51,7 +51,7 @@ def step_maker(query: str, planList: PlanList, selected_tables: list[str], db_in
     get_llm_logger().info(f"Generating Steps with query using llm")
 
     completion = client.beta.chat.completions.parse(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": """You are a sql query generator.
              Generate SQL query from the plan given by the user.
