@@ -1,7 +1,7 @@
 import { NEXT_PUBLIC_AI_BACKEND } from "@/lib/consts";
 import { useState } from "react";
 
-function useStreamResponse({
+function useStreamResponseForChat({
   streamCallback,
 }: {
   streamCallback: React.Dispatch<React.SetStateAction<string[]>>;
@@ -25,7 +25,7 @@ function useStreamResponse({
 
     const reader = response.body.getReader();
     setIsLoading(true);
-    streamCallback([]);
+    // streamCallback([]);
     readStream(reader);
     return reader;
   }
@@ -69,4 +69,4 @@ function useStreamResponse({
   return { data, runQuery, isLoading, setIsLoading };
 }
 
-export default useStreamResponse;
+export default useStreamResponseForChat;

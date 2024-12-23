@@ -6,8 +6,8 @@ import { PiFileSqlBold } from "react-icons/pi";
 import { FaFlagCheckered } from "react-icons/fa";
 import { BsDatabaseFillCheck } from "react-icons/bs";
 import { FaHandPointRight } from "react-icons/fa";
-import SQLResultTable from "../components/SQLResultTable";
-import { BarChartBasic } from "../test/BarChart";
+import SQLResultTable from "@/app/components/SQLResultTable";
+import { BarChartBasic } from "@/components/graphs/BarChart";
 
 function parseStringToArray(input: string): string[] {
   // Remove the square brackets and split by comma
@@ -87,18 +87,31 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
   const barChartObj = foundState === "BAR" ? (dataObject as BarRaw) : null;
   const transformedData = barChartObj ? transformChartData(barChartObj) : null;
 
-  return (
-    <div className="flex flex-col gap-2 w-full items-center justify-center">
+  //   console.log("FoundState", foundState);
+  //   console.log("DataObject", dataObject);
+  //   console.log("content", content);
+
+  return foundState === "TABLES" ||
+    foundState === "PLAN" ||
+    foundState === "STEPS" ||
+    foundState === "QUERY" ||
+    foundState === "OUTPUT" ||
+    foundState === "BAR" ? (
+    <div
+      className={
+        "flex flex-col gap-2 w-full items-center justify-center px-4 py-3 bg-[#DBE2EF] rounded-lg"
+      }
+    >
       {foundState === "TABLES" ? (
         <>
-          <h1 className="tracking-widest">TABLE SELECTION COMPLETED</h1>
-          <div className="flex flex-wrap gap-3 justify-center items-center">
+          <h1 className="tracking-widest w-full">Selected Tables:</h1>
+          <div className="w-full flex flex-wrap gap-3 justify-start items-center">
             {
               // Display the tables as a list
               dataObject
                 ? dataObject?.map((table: string, index: number) => (
                     <div
-                      className="bg-slate-200 text-slate-950 px-4 py-2 rounded-lg flex gap-3 items-center"
+                      className="bg-slate-200 text-slate-950 border-2 border-slate-950 px-4 py-2 rounded-lg flex gap-3 items-center"
                       key={index}
                     >
                       <BsTable />
@@ -111,15 +124,17 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
         </>
       ) : foundState === "PLAN" ? (
         <>
-          <h1 className="tracking-widest">PLAN CREATION COMPLETED</h1>
+          <h1 className="tracking-widest w-full">
+            Here is my plan for your query:
+          </h1>
           {plansObj ? (
             <div className="flex flex-col gap-4">
               {plansObj.plans.map((plan, index) => (
                 <div
                   key={index}
-                  className="flex flex-col p-4 rounded-lg gap-4 bg-slate-200 text-slate-950"
+                  className="flex flex-col p-4 rounded-lg gap-4 bg-slate-200 text-slate-950 border-2 border-slate-950 text-sm"
                 >
-                  <div className="flex gap-2 items-end bg-slate-950 text-slate-200 w-fit px-4 py-2 rounded-lg">
+                  <div className="flex gap-2 items-end bg-slate-950 text-slate-200 w-fit px-4 py-2 rounded-lg items-center">
                     <TbBulbFilled size={24} />
                     <div className="text-md -mb-0.5">Plan {index + 1}</div>
                   </div>
@@ -140,13 +155,15 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
         </>
       ) : foundState === "STEPS" ? (
         <>
-          <h1 className="tracking-widest">STEPS CREATION COMPLETED</h1>
+          <h1 className="tracking-widest w-full">
+            Here are the steps for your query:
+          </h1>
           {stepsObj ? (
             <div className="flex flex-col gap-4">
               {stepsObj.steps.map((step, index) => (
                 <div
                   key={index}
-                  className="flex flex-col p-4 rounded-lg gap-4 bg-slate-200 text-slate-950"
+                  className="flex flex-col p-4 rounded-lg gap-4 bg-slate-200 text-slate-950 border-2 border-slate-950"
                 >
                   <div className="flex gap-2 items-end bg-slate-950 text-slate-200 w-fit px-4 py-2 rounded-lg">
                     <FaFlagCheckered size={24} />
@@ -168,7 +185,9 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
         </>
       ) : foundState === "QUERY" ? (
         <>
-          <h1 className="tracking-widest">QUERY EXECUTED SUCCESSFULLY</h1>
+          <h1 className="tracking-widest w-full">
+            I have executed your query:
+          </h1>
           <div className="flex gap-2 items-center bg-slate-950 text-slate-200 px-4 py-2 rounded-xl border-[1px] border-[#ffffff30]">
             <div className="flex gap-2 w-max">
               <BsDatabaseFillCheck size={24} />
@@ -176,11 +195,17 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
             </div>
             <span>{content}</span>
           </div>
-          <SQLResultTable resultString={content} />
+          <div className="bg-slate-950 w-full text-slate-200 px-4 py-2 rounded-lg">
+            <div className="flex gap-3 items-end bg-slate-950 text-slate-200 w-fit py-2 rounded-lg">
+              <FaFlagCheckered size={24} />
+              <div className="text-sm">Here is the SQL Result as Table</div>
+            </div>
+            <SQLResultTable resultString={content} />
+          </div>
         </>
       ) : foundState === "OUTPUT" ? (
         <>
-          <h1 className="tracking-widest">OUTPUT PROCESSED</h1>
+          <h1 className="tracking-widest w-full">Response to your query:</h1>
           <div className="flex gap-2 items-center bg-slate-950 text-slate-200 px-4 py-2 rounded-xl border-[1px] border-[#ffffff30]">
             <div className="flex gap-2 w-max">
               <FaHandPointRight size={24} />
@@ -205,13 +230,17 @@ const StreamCard: React.FC<{ foundState: string; content: string }> = ({
           )}
         </>
       ) : (
-        <div className="text-center">{content}</div>
+        <></>
       )}
+    </div>
+  ) : (
+    <div className="text-center text-xs italic text-muted-foreground">
+      {content}
     </div>
   );
 };
 
-export const StreamDataProcessor = ({ text }: { text: string }) => {
+export const StreamMessageProcessor = ({ text }: { text: string }) => {
   const foundState = text.startsWith("Selected Tables are:")
     ? "TABLES"
     : text.startsWith("Created Plan is :")
@@ -225,6 +254,8 @@ export const StreamDataProcessor = ({ text }: { text: string }) => {
     : text.startsWith("Bar Chart is:")
     ? "BAR"
     : "UNKNOWN";
+
+  // console.log("content to process : ", text);
 
   if (foundState === "TABLES") {
     const tables = text.replace("Selected Tables are:", "");

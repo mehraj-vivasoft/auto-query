@@ -5,7 +5,7 @@ from openai import OpenAI
 
 from core.query_planner import PlanList
 from core.step_maker import QuerySteps
-from db.get_schema_list import get_schema_list
+from db_factory.db_interface import DatabaseInterface
 from utils.logging_config import get_llm_logger
 from core.enums import get_neccessary_flags
 
@@ -19,11 +19,11 @@ class FixQuery(BaseModel):
 
 
 async def query_fixer(
-    query: str, planList: PlanList, queryList: QuerySteps, error_message: str, selected_tables: list[str]
+    query: str, planList: PlanList, queryList: QuerySteps, error_message: str, selected_tables: list[str], db_instance: DatabaseInterface
 ):
 
     tables = selected_tables
-    schemas = get_schema_list(planList.required_table_names)
+    schemas = db_instance.get_schema_list(planList.required_table_names)
     flags = get_neccessary_flags(selected_tables)
 
     # => I did followed the following steps to do the query: {queryList}    
@@ -36,10 +36,7 @@ async def query_fixer(
      {queryList.steps[-1].sql_query}
     => But, I got this error while running the final query: {error_message}
     => please fix the query and return a query which is correct
-     and also reaches the goal.
-      One note if the query is about any specific company 
-    first you need to take the CompanyId using this sample query: SELECT CompanyId from Security.AppClientCompany WHERE CompanyName LIKE '%name_of_company%'
-    where name_of_company is the name of the company given in the user query for which you want to get the CompanyId for.
+     and also reaches the goal.      
     """
 
     get_llm_logger().info("FIXING QUERY USING LLM")

@@ -30,7 +30,7 @@ def domain_selector(query: str, domains: list[str]) -> list[str]:
         messages=[
             {"role": "system", "content": """You are a sql schema or domain selctor.
              You will be given a natural language query and a list of schema or domains
-             You need to choose releted schemas or domains . So you will return the releted
+             You need to choose schemas or domains releted to the query. So you will return the releted
              domain list in the given response_format."""},
             {"role": "user", "content": prompt}
         ],
