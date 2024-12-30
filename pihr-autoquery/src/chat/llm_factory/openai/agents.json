@@ -1,0 +1,10 @@
+[
+  {
+    "agent_name": "guardrail",
+    "agent_task": "Make sure the query is valid PiHR query & does not ask for any sensitive information"
+  },
+  {
+    "agent_name": "response_generator",
+    "agent_task": "Generate a response for the user query"
+  }
+]
