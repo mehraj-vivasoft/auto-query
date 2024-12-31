@@ -10,8 +10,7 @@ class AssistantResponse(BaseModel):
 
 class Prompt(BaseModel):
     system_prompt: str
-    user_prompt: str
-    response_format: BaseModel
+    user_prompt: str    
 
 def get_chat_prompt(query: str, rag_context: str) -> Prompt:
     
@@ -26,6 +25,11 @@ def get_chat_prompt(query: str, rag_context: str) -> Prompt:
     
     Here is some background information related to the user query:
     Background Context: {rag_context}    
+    
+    Now you have to answer the user query based on the Background context and chat history.
+    Response Format:
+    - Assistant Response
+    - Assistant Response Summary
     """
     
-    return Prompt(system_prompt=system_prompt, user_prompt=user_prompt, response_format=AssistantResponse)
+    return Prompt(system_prompt=system_prompt, user_prompt=user_prompt)

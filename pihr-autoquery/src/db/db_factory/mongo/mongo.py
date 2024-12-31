@@ -55,7 +55,16 @@ class MongoDB(DBInterface):
         result = chats_collection.insert_one(chat_document)
         chat_document["message_id"] = result.inserted_id
         print(f"Chat posted to conversation {conversation_id}.")
-        return ChatMessageModel(**chat_document)
+        return ChatMessageModel(
+            message_id=str(result.inserted_id),
+            conversation_id=conversation_id,
+            user_id=user_id,
+            role=role,
+            message=message,
+            msg_summary=msg_summary,
+            created_at=current_timestamp,
+            updated_at=current_timestamp
+        )
 
     def get_chat_by_page(self, conversation_id: str, page_number: int, limit: int) -> MessagesResponseModel:
         """Get a list of chat conversations and messages, sorted by the latest message's timestamp"""

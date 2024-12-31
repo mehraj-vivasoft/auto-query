@@ -9,33 +9,46 @@ from src.db.schemas import ChatPost, ChatQuery
 router = APIRouter()
 
 # Dependency to ensure MongoDB is connected
-def get_db() -> DBInterface:
-    db_instance = MongoDB(uri="mongodb://localhost:27017", db_name="chat_db")
-    db_instance.connect()
-    
-    if not db_instance.db:
-        raise HTTPException(status_code=500, detail="Database not connected")
-    
+async def get_db() -> DBInterface:
+    """Dependency to ensure MongoDB is connected with proper error handling."""
+    db_instance = None
     try:
+        db_instance = MongoDB(uri="mongodb://admin:kothinAdminPass@localhost:27017", db_name="chat_db")
+        db_instance.connect()
+        
+        if db_instance.db is None:
+            raise HTTPException(
+                status_code=503, 
+                detail="Database connection not available"
+            )
+            
         yield db_instance
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Database connection error: {str(e)}"
+        )
     finally:
-        db_instance.disconnect()        
+        if db_instance:
+            db_instance.disconnect()      
 
 # Example API call: GET /conversations?user_id=<user_id>
-@router.get("/", response_model=List[Dict[str, Any]])
+@router.get("/", response_model=Any)
 async def get_conversations(user_id: str, db: DBInterface = Depends(get_db)):
     """Endpoint to get all conversations for a user."""
-    try:
+    try:        
         conversations = db.get_all_conversations(user_id)
+        print(conversations)
         return conversations
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch conversations: {e}")
     
 # Example API call: GET /<conversation_id>?page=<page>&limit=<limit>
-@router.get("/{conversation_id}", response_model=List[Dict[str, Any]])
+@router.get("/{conversation_id}", response_model=Any)
 async def get_chats(conversation_id: str, page: int = 1, limit: int = 10, db: DBInterface = Depends(get_db)):
     """Endpoint to get chats by page."""
-    try:
+    try:        
         chats = db.get_chat_by_page(conversation_id, page, limit)
         return chats
     except Exception as e:

@@ -6,10 +6,10 @@ class LLMInterface(ABC):
     
     # generate response from user query, user_id, conversation_id
     @abstractmethod
-    def generate_response(self, query: str, user_id: str, conversation_id: str) -> str:
+    async def generate_response(self, query: str, user_id: str, conversation_id: str) -> str:
         pass
 
     # check if the query is valid
     @abstractmethod
-    def check_validation(self, query: str) -> GurdrailResponse:
+    async def check_validation(self, query: str) -> GurdrailResponse:
         pass

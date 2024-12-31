@@ -14,8 +14,8 @@ version = "v1"
 
 app = FastAPI()
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
     # setup_logging()
     # global db_instance
     # db_instance = MSSQLDatabaseInistance()
@@ -23,12 +23,12 @@ async def lifespan(app: FastAPI):
     # await db_instance.connect()
     # logger = get_app_logger()    
     # logger.info("Application started")    
-    print("Application started")
-    yield
+    # print("Application started")
+    # yield
     # await db_instance.disconnect()
     # logger.info("Application stopped")
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

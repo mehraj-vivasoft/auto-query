@@ -1,11 +1,11 @@
-from typing import Any
+from typing import Any, Type
 
 from pydantic import BaseModel
 
 class Prompt(BaseModel):
     system_prompt: str
     user_prompt: str
-    response_format: BaseModel
+    response_format: Type[BaseModel]
     
 class GurdrailResponse(BaseModel):
     is_safe: bool

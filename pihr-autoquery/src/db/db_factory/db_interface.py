@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
-from src.db.schemas import ChatMessageModel, AllConversationsResponseModel
+from src.db.schemas import ChatMessageModel, AllConversationsResponseModel, MessagesResponseModel
 
 class DBInterface(ABC):
     
@@ -25,7 +25,7 @@ class DBInterface(ABC):
         pass
     
     @abstractmethod
-    def get_chat_by_page(self, conversation_id: str, page_number: int, limit: int) -> List[Dict[str, Any]]:
+    def get_chat_by_page(self, conversation_id: str, page_number: int, limit: int) -> MessagesResponseModel:
         """Get a list of chat conversations and messages, sorted by the latest message's timestamp"""
         pass
     
