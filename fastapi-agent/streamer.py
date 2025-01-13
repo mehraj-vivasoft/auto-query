@@ -101,7 +101,7 @@ async def streamer(request: QueryRequest, db_instance: DatabaseInterface):
         # }      
         yield "<<GGWWP>>$ERROR REASON: " + str(error_explaination)
         
-        usd_bill = total_tokens * 0.004 / 1000
+        usd_bill = total_tokens * 0.0003 / 1000
         bdt_bill = usd_bill * 120
         yield "<<GGWWP>>$TOTAL BILL: USD " + str(usd_bill) + " BDT " + str(bdt_bill)    
         
