@@ -53,6 +53,10 @@ terraform-ec2/.terraform
 terraform-ec2/.terraform.lock.hcl
 terraform-ec2/terraform.tfstate
 terraform-ec2/terraform.tfstate.backup
+terraform-ec2/readme.md
+terraform-ec2/setup_ec2.yml
+terraform-ec2/inventory.ini
+terraform-ec2/ec2.yml
 
 docker-compose-all.yml
 

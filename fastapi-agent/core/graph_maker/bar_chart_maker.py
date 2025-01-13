@@ -40,7 +40,7 @@ async def bar_chart_maker(query: str, output: str) -> BarChart:
     # get_llm_logger().info(f"Processing output of the query")
 
     completion = client.beta.chat.completions.parse(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": """You are a bar chart maker.
             I will provide you a natural language query and the response after executing the query in the database.
