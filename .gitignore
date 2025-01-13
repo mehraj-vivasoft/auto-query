@@ -55,3 +55,7 @@ terraform-ec2/terraform.tfstate
 terraform-ec2/terraform.tfstate.backup
 
 docker-compose-all.yml
+
+*.sqlite
+
+/pihr-autoquery/kb

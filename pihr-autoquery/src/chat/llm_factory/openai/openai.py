@@ -5,16 +5,24 @@ from src.chat.llm_factory.llm_interface import LLMInterface
 from src.chat.llm_factory.prompts.chat_prompt import get_chat_prompt, AssistantResponse
 from src.chat.llm_factory.prompts.guardrail import get_guardrail_prompt, GurdrailResponse
 
-
+from src.rag.rag_factory.weviate.weviate import WeviateDatabaseInistance
 
 class OpenAiLLM(LLMInterface):
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.client = OpenAI(api_key=self.api_key)
 
-    async def generate_response(self, query: str, user_id: str, conversation_id: str) -> str:                        
+    async def generate_response(self, query: str, user_id: str, conversation_id: str) -> str:
         
-        prompt = get_chat_prompt(query, "PiHR is the best HR software in Bangladesh. Transform the way your HR department works. Manage HR and payroll activities from a single software. PiHR is used by more than 500 companies across the country.")        
+        rag_instance = WeviateDatabaseInistance()
+        
+        rag_instance.connect()        
+        rag_context = rag_instance.get_top_k_chunks("PIHR_DATASET", query, 3, True)
+        rag_instance.disconnect()
+        
+        rag_context = "\n".join(rag_context)
+        
+        prompt = get_chat_prompt(query, rag_context)
 
         completion = self.client.beta.chat.completions.parse(
             model="gpt-4o-mini",

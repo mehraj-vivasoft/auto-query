@@ -71,7 +71,7 @@ async def query(db: WeviateDatabaseInistance = Depends(get_db_insance)):
 @router.get("/query/{collection_name}/{query}")
 async def query(collection_name: str, query: str, db: WeviateDatabaseInistance = Depends(get_db_insance)):        
 
-    entries = db.get_top_k_chunks(collection_name, query, 3)    
+    entries = db.get_top_k_chunks(collection_name, query, 3)
         
     return {
         "message": f"Successfully Fetched {len(entries)} Entries from RAG",

@@ -37,6 +37,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: kothinAdminPass
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - mynetwork  
 
 volumes:
   weaviate_data:

@@ -65,19 +65,13 @@ async def complete_query(chat_init: ChatRequest, llm: LLMInterface = Depends(get
     """    
     
     assistant_response = None
-    validation_chk = await llm.check_validation(chat_init.question)
-    print("[ROOT] Validation Check")
-    print(validation_chk)
+    validation_chk = await llm.check_validation(chat_init.question)        
     
-    if validation_chk.is_safe:
-        print("[ROOT] Safe to continue")
+    if validation_chk.is_safe:        
         assistant_response = await llm.generate_response(
             query=chat_init.question, user_id=chat_init.user_id, conversation_id=chat_init.conversation_id
-        )
-        print("[ROOT] Assistant Response")
-        print(assistant_response)
-    else:
-        print("[ROOT] Unsafe to continue")
+        )                        
+    else:        
         assistant_response = validation_chk.reasoning_for_safety_or_danger
         
     await db.post_chat(
@@ -96,15 +90,14 @@ async def complete_query(chat_init: ChatRequest, llm: LLMInterface = Depends(get
         msg_summary=assistant_response
     )
     
-    if chat_init.is_new:
-        print("New Conversation")        
+    if chat_init.is_new:        
         db.create_conversation(
             conversation_id=chat_init.conversation_id,
             subject=chat_init.question,
             user_id=chat_init.user_id
         )        
         return NewConversationModel(conversation_id=chat_init.conversation_id, 
-                                    user_id=chat_init.user_id,                                    
+                                    user_id=chat_init.user_id,
                                     subject=chat_init.question,
                                     created_at=chat_document.created_at,
                                     updated_at=chat_document.updated_at,

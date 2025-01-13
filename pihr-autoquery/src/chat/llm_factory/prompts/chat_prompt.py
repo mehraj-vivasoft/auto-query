@@ -24,7 +24,12 @@ def get_chat_prompt(query: str, rag_context: str) -> Prompt:
     User Query: {query}
     
     Here is some background information related to the user query:
-    Background Context: {rag_context}    
+    Background Context: {rag_context}            
+    
+    use the relevant information from the background context and ignore the irrelevant information from the background context to answer the user query.
+    If you cannot answer the user query based on the background context, you should tell the user that you cannot answer the user query.
+    
+    Make sure that the response is not too long.
     
     Now you have to answer the user query based on the Background context and chat history.
     Response Format:
